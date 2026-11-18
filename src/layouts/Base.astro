@@ -1,0 +1,177 @@
+---
+import '@fontsource-variable/anek-latin/standard.css';
+import '@fontsource-variable/raleway';
+import '../styles/global.css';
+import anekLatin from '@fontsource-variable/anek-latin/files/anek-latin-latin-standard-normal.woff2?url';
+import { site, faqs, plans } from '../config/site';
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;
+}
+const { title, description, path = '/' } = Astro.props;
+const canonical = new URL(path, site.url).toString();
+const ogImage = new URL('/og-image.jpg', site.url).toString();
+
+const clinicId = `${site.url}/#clinica`;
+const doctorId = `${site.url}/#medico`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': ['MedicalClinic', 'MedicalBusiness'],
+      '@id': clinicId,
+      name: site.name,
+      alternateName: site.shortName,
+      url: site.url,
+      image: ogImage,
+      logo: new URL('/icon-512.png', site.url).toString(),
+      telephone: `+${site.whatsapp.number}`,
+      priceRange: 'R$ 500 – R$ 2.500',
+      currenciesAccepted: 'BRL',
+      isAcceptedAsPayment: false,
+      medicalSpecialty: ['PrimaryCare'],
+      description:
+        'Consultório médico em Santo André focado em saúde, emagrecimento, composição corporal e performance física, com acompanhamento individualizado.',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: site.address.street,
+        addressLocality: site.address.city,
+        addressRegion: site.address.state,
+        postalCode: site.address.postalCode,
+        addressCountry: site.address.country,
+      },
+      geo: { '@type': 'GeoCoordinates', latitude: site.address.lat, longitude: site.address.lng },
+      hasMap: site.mapsUrl,
+      areaServed: ['Santo André', 'São Bernardo do Campo', 'São Caetano do Sul', 'Mauá', 'ABC Paulista'].map(
+        (name) => ({ '@type': 'City', name })
+      ),
+      openingHoursSpecification: site.openingHours.map((h) => ({
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: h.days,
+        opens: h.opens,
+        closes: h.closes,
+      })),
+      employee: { '@id': doctorId },
+      makesOffer: plans.map((p) => ({
+        '@type': 'Offer',
+        name: p.name,
+        description: p.tagline,
+        priceCurrency: 'BRL',
+        price: p.id === 'avulsa' ? '500' : p.id === 'evolution' ? '1500' : '2500',
+      })),
+      sameAs: [site.instagram].filter(Boolean),
+    },
+    {
+      '@type': 'Physician',
+      '@id': doctorId,
+      name: site.doctor.name,
+      url: `${site.url}/#medico`,
+      image: new URL('/og-image.jpg', site.url).toString(),
+      worksFor: { '@id': clinicId },
+      address: { '@type': 'PostalAddress', addressLocality: site.address.city, addressRegion: site.address.state, addressCountry: 'BR' },
+      alumniOf: { '@type': 'CollegeOrUniversity', name: 'Universidade Municipal de São Caetano do Sul' },
+      identifier: site.doctor.crm,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${site.url}/#website`,
+      url: site.url,
+      name: site.name,
+      inLanguage: 'pt-BR',
+      publisher: { '@id': clinicId },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ],
+};
+
+const { googleTagId, metaPixelId } = site.analytics;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="dark" />
+
+    <link rel="preload" href={anekLatin} as="font" type="font/woff2" crossorigin />
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="geo.region" content="BR-SP" />
+    <meta name="geo.placename" content={site.address.city} />
+    <meta name="geo.position" content={`${site.address.lat};${site.address.lng}`} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    {
+      googleTagId && (
+        <>
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${googleTagId}`} />
+          <script is:inline define:vars={{ googleTagId }}>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            window.gtag = gtag;
+            gtag('js', new Date());
+            gtag('config', googleTagId);
+          </script>
+        </>
+      )
+    }
+    {
+      metaPixelId && (
+        <script is:inline define:vars={{ metaPixelId }}>
+          !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+          n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+          document,'script','https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', metaPixelId); fbq('track', 'PageView');
+        </script>
+      )
+    }
+  </head>
+  <body>
+    <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+    <slot />
+
+    <!-- Conversão: registra cliques no WhatsApp (Google Ads / GA4 / Meta) -->
+    <script is:inline>
+      document.addEventListener('click', function (e) {
+        var a = e.target.closest && e.target.closest('a[href^="https://wa.me/"]');
+        if (!a) return;
+        var origem = a.getAttribute('data-origem') || 'site';
+        if (window.gtag) window.gtag('event', 'whatsapp_click', { origem: origem });
+        if (window.fbq) window.fbq('track', 'Contact', { content_name: origem });
+      });
+    </script>
+  </body>
+</html>

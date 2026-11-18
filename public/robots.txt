@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://brvitta.com.br/sitemap-index.xml

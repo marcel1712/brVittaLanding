@@ -1,0 +1,1048 @@
+---
+import { Picture, Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import WhatsIcon from '../components/WhatsIcon.astro';
+import { site, plans, faqs, whatsappLink } from '../config/site';
+
+import drBruno from '../assets/dr-bruno.webp';
+import consultorio from '../assets/consultorio.png';
+import monograma from '../assets/monograma.png';
+import logoCompleto from '../assets/logo-completo.png';
+
+const title = 'Dr. Bruno Ricardo | Saúde, emagrecimento e performance em Santo André';
+const description =
+  'Consultório médico em Santo André com consulta de 50 a 60 minutos, avaliação de composição corporal (InBody) e plano individualizado de treino, nutrição e estilo de vida. Agende pelo WhatsApp.';
+
+const audiences = [
+  {
+    t: 'Emagrecer com saúde',
+    d: 'Perda de gordura com estratégia, preservando massa muscular e sem dietas que você não consegue manter.',
+  },
+  {
+    t: 'Ganhar massa e força',
+    d: 'Treino, alimentação e suplementação ajustados ao seu corpo, à sua rotina e aos seus exames.',
+  },
+  {
+    t: 'Evoluir no esporte',
+    d: 'Do iniciante ao atleta: avaliação, prevenção de lesões e planejamento para render mais.',
+  },
+  {
+    t: 'Ter mais disposição',
+    d: 'Sono, energia e hábitos que sustentam a qualidade de vida em qualquer fase.',
+  },
+];
+
+const steps = [
+  { t: 'Chame no WhatsApp', d: 'Tire suas dúvidas, escolha o plano e reserve o seu horário.' },
+  { t: 'Conte sua história', d: 'Antes da consulta, você responde uma anamnese sobre saúde, rotina e objetivos.' },
+  {
+    t: 'Consulta presencial',
+    d: 'Avaliação clínica, composição corporal e leitura dos seus exames. Você sai com um plano claro.',
+  },
+  { t: 'Acompanhamento', d: 'Retornos, ajustes e suporte pelo WhatsApp para manter a evolução.' },
+];
+---
+
+<Base title={title} description={description}>
+  <header class="topbar">
+    <div class="wrap topbar-in">
+      <a href="/" class="brand" aria-label="Vitta Performance — início">
+        <Image src={monograma} alt="" width={30} height={32} loading="eager" />
+        <span>Vitta Performance</span>
+      </a>
+      <nav aria-label="Seções">
+        <a href="#para-quem">Para quem é</a>
+        <a href="#medico">O médico</a>
+        <a href="#planos">Planos</a>
+        <a href="#duvidas">Dúvidas</a>
+      </nav>
+      <a class="btn btn-gold topbar-cta" href={whatsappLink()} data-origem="topo" target="_blank" rel="noopener">
+        <WhatsIcon /> Agendar
+      </a>
+    </div>
+  </header>
+
+  <main id="conteudo">
+    <!-- ───────── Hero ───────── -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-photo">
+          <Picture
+            src={drBruno}
+            formats={['avif', 'webp']}
+            fallbackFormat="jpg"
+            widths={[420, 720]}
+            sizes="(min-width: 900px) 40vw, 100vw"
+            alt="Dr. Bruno Ricardo, de jaleco, no Museu do Ipiranga em São Paulo"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+
+        <div class="hero-copy">
+          <h1>
+            <span class="h1-display">
+              <span class="ln"><span>O seu</span></span>
+              <span class="ln"><span>ápice</span></span>
+              <span class="ln"><span>começa</span></span>
+              <span class="ln"><span>agora.</span></span>
+            </span>
+            <span class="h1-sub">Saúde, emagrecimento e performance em Santo André</span>
+          </h1>
+
+          <p class="hero-text">
+            Uma consulta sem pressa, com avaliação de composição corporal e um plano que cabe na sua rotina. Para quem já
+            treina, para quem quer começar e para quem está voltando a se mover.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-gold btn-lg" href={whatsappLink()} data-origem="hero" target="_blank" rel="noopener">
+              <WhatsIcon /> Agendar pelo WhatsApp
+            </a>
+            <a class="btn btn-ghost btn-lg" href="#planos">Ver planos e valores</a>
+          </div>
+
+          <p class="hero-sign">
+            <strong>{site.doctor.displayName}</strong>
+            <span>Médico · {site.doctor.crm}</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Para quem é ───────── -->
+    <section id="para-quem" class="audience">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Seus objetivos, a sua realidade.</h2>
+          <p class="lede">
+            Integramos saúde, composição corporal e performance em um cuidado individualizado, do primeiro treino ao alto
+            rendimento.
+          </p>
+        </div>
+        <ul class="aud-list" role="list">
+          {
+            audiences.map((a) => (
+              <li>
+                <h3>{a.t}</h3>
+                <p>{a.d}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- ───────── Consultório ───────── -->
+    <section class="clinic" aria-labelledby="clinic-title">
+      <div class="wrap clinic-grid">
+        <figure class="clinic-photo">
+          <Picture
+            src={consultorio}
+            formats={['avif', 'webp']}
+            fallbackFormat="jpg"
+            widths={[480, 941]}
+            sizes="(min-width: 900px) 42vw, 100vw"
+            alt="Consultório da Vitta Performance em Santo André, com mesa de atendimento e balança de bioimpedância InBody"
+          />
+        </figure>
+        <div class="clinic-copy">
+          <h2 id="clinic-title">Uma consulta longa, com dados de verdade.</h2>
+          <p class="lede">
+            O ponto de partida é entender você: sua história, sua rotina e o que pode estar limitando a sua evolução. Só
+            depois vêm as metas.
+          </p>
+          <dl class="facts">
+            <div>
+              <dt>50 a 60 min</dt>
+              <dd>de consulta, com exame físico completo</dd>
+            </div>
+            <div>
+              <dt>InBody</dt>
+              <dd>avaliação de composição corporal: gordura, músculo e água</dd>
+            </div>
+            <div>
+              <dt>Exames</dt>
+              <dd>análise e interpretação dos seus exames laboratoriais</dd>
+            </div>
+            <div>
+              <dt>Plano</dt>
+              <dd>treino, nutrição, suplementação e estilo de vida</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── O médico ───────── -->
+    <section id="medico" class="doctor">
+      <Image src={monograma} alt="" class="doctor-mark" width={620} height={652} />
+      <div class="wrap doctor-in">
+        <p class="doctor-kicker">O médico</p>
+        <blockquote>
+          <p class="doctor-quote">“Eu já fui gordinho. Já fui muito magro também. Cresci inseguro com o meu próprio corpo e, aos 16 anos, decidi mudar isso.”</p>
+          <p class="doctor-rest">
+            O interesse virou profissão. Estudei Medicina e hoje dedico a minha carreira à saúde, ao exercício e à
+            performance, unindo ciência, experiência prática e acompanhamento individualizado. Meu maior orgulho é ajudar
+            cada paciente a entender que, com estratégia e direção certa, a mudança que parece distante é possível.
+          </p>
+        </blockquote>
+        <footer class="doctor-id">
+          <strong>{site.doctor.name}</strong>
+          <span>{site.doctor.crm}</span>
+          <span>Formado em {site.doctor.education}</span>
+        </footer>
+      </div>
+    </section>
+
+    <!-- ───────── Como funciona ───────── -->
+    <section id="como-funciona" class="steps">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Do primeiro contato ao acompanhamento.</h2>
+        </div>
+        <ol class="step-list" role="list">
+          {
+            steps.map((s, i) => (
+              <li>
+                <span class="step-n" aria-hidden="true">
+                  {i + 1}
+                </span>
+                <h3>{s.t}</h3>
+                <p>{s.d}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <!-- ───────── Planos ───────── -->
+    <section id="planos" class="plans">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Escolha o ritmo do seu cuidado.</h2>
+          <p class="lede">Comece com uma consulta ou garanta o acompanhamento completo. Valores transparentes, sem surpresa.</p>
+        </div>
+        <div class="plan-grid">
+          {
+            plans.map((p) => (
+              <article class:list={['plan', { 'plan-featured': p.featured }]}>
+                {p.featured && <p class="plan-flag">Mais completo</p>}
+                <h3>{p.name}</h3>
+                <p class="plan-tag">{p.tagline}</p>
+                <p class="plan-price">
+                  <span class="amount">{p.price}</span>
+                  <span class="note">{p.priceNote}</span>
+                </p>
+                <p class="plan-total">{p.priceTotal ?? ' '}</p>
+                <ul role="list">
+                  {p.items.map((it) => (
+                    <li>{it}</li>
+                  ))}
+                </ul>
+                <a
+                  class:list={['btn', p.featured ? 'btn-gold' : 'btn-ghost']}
+                  href={whatsappLink(`Olá! Vim pelo site e tenho interesse no plano ${p.name}. Pode me passar os horários disponíveis?`)}
+                  data-origem={`plano-${p.id}`}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <WhatsIcon /> Quero este plano
+                </a>
+              </article>
+            ))
+          }
+        </div>
+        <p class="plans-note">Parcelamento sujeito à forma de pagamento escolhida. Desconto de 5% no pagamento à vista dos planos.</p>
+      </div>
+    </section>
+
+    <!-- ───────── FAQ ───────── -->
+    <section id="duvidas" class="faq">
+      <div class="wrap faq-grid">
+        <div class="faq-head">
+          <h2>O que perguntam antes de marcar.</h2>
+          <p class="lede">Não encontrou a sua dúvida? A equipe responde pelo WhatsApp.</p>
+        </div>
+        <div class="faq-list">
+          {
+            faqs.map((f) => (
+              <details>
+                <summary>
+                  <h3>{f.q}</h3>
+                </summary>
+                <p>{f.a}</p>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── CTA final ───────── -->
+    <section id="agendar" class="closing">
+      <div class="wrap closing-grid">
+        <div>
+          <h2>Sua primeira consulta começa com uma mensagem.</h2>
+          <a class="btn btn-gold btn-lg" href={whatsappLink()} data-origem="final" target="_blank" rel="noopener">
+            <WhatsIcon /> Agendar pelo WhatsApp
+          </a>
+        </div>
+        <address class="where">
+          <p class="where-label">Consultório</p>
+          <p>
+            {site.address.street}<br />
+            {site.address.neighborhood}, {site.address.city} – {site.address.state}<br />
+            CEP {site.address.postalCode}
+          </p>
+          <p class="where-label">Atendimento</p>
+          <p>{site.openingHoursLabel}</p>
+          <p><a href={site.mapsUrl} target="_blank" rel="noopener" class="link">Abrir no Google Maps</a></p>
+        </address>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <div class="wrap foot-in">
+      <Image src={logoCompleto} alt="Vitta Performance" width={200} height={67} class="foot-logo" />
+      <div class="foot-legal">
+        <p>Responsável técnico: {site.doctor.name} · {site.doctor.crm}</p>
+        <p>
+          Já é paciente? <a href={site.platformUrl} class="link" rel="noopener">Entrar na plataforma</a>
+          {site.instagram && <> · <a href={site.instagram} class="link" rel="noopener" target="_blank">Instagram</a></>}
+        </p>
+        <p>© {new Date().getFullYear()} Vitta Performance. Santo André, SP.</p>
+      </div>
+    </div>
+  </footer>
+
+  <a class="mobile-cta btn btn-gold" href={whatsappLink()} data-origem="barra-mobile" target="_blank" rel="noopener">
+    <WhatsIcon /> Agendar pelo WhatsApp
+  </a>
+
+  <script>
+    // Barra de WhatsApp no mobile aparece só depois que o CTA do hero sai da tela
+    // e some quando o CTA final está visível (evita botões duplicados).
+    const heroCta = document.querySelector('.hero-actions');
+    const finalCta = document.querySelector('#agendar');
+    if (heroCta && finalCta && 'IntersectionObserver' in window) {
+      const state = { hero: true, final: false };
+      const update = () => document.body.classList.toggle('show-cta', !state.hero && !state.final);
+      new IntersectionObserver(([e]) => { state.hero = e.isIntersecting || e.boundingClientRect.top > 0; update(); }).observe(heroCta);
+      new IntersectionObserver(([e]) => { state.final = e.isIntersecting; update(); }).observe(finalCta);
+    }
+  </script>
+</Base>
+
+<style>
+  /* ───────── Topo ───────── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(0 0 0 / 0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgb(255 255 255 / 0.06);
+  }
+  .topbar-in {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: 4.25rem;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    margin-right: auto;
+  }
+  .brand img {
+    width: 26px;
+    height: auto;
+  }
+  .brand span {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+  nav {
+    display: flex;
+    gap: 1.75rem;
+  }
+  nav a {
+    font-size: 0.9375rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav a:hover {
+    color: var(--white);
+  }
+  .topbar-cta {
+    --h: 2.6rem;
+    padding: 0 1.15rem;
+    font-size: 0.9375rem;
+  }
+
+  /* ───────── Hero ───────── */
+  .hero {
+    position: relative;
+    padding-block: clamp(2rem, 4vw, 3.5rem) clamp(4rem, 8vw, 7rem);
+    background: radial-gradient(120% 80% at 80% 110%, var(--navy) 0%, transparent 60%), var(--black);
+    overflow: hidden;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: end;
+  }
+  .hero-photo {
+    grid-column: 8 / -1;
+    grid-row: 1;
+    position: relative;
+    aspect-ratio: 3 / 4.2;
+    border-radius: 200px 200px var(--radius) var(--radius);
+    overflow: hidden;
+    animation: photo-in 1.4s var(--ease) both;
+  }
+  .hero-photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 60%;
+    filter: saturate(0.7) brightness(0.88) contrast(1.06);
+  }
+  .hero-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgb(0 0 0 / 0.55) 0%, transparent 40%),
+      linear-gradient(0deg, rgb(0 0 0 / 0.55) 0%, transparent 35%);
+  }
+  .hero-copy {
+    grid-column: 1 / span 10;
+    grid-row: 1;
+    position: relative;
+    z-index: 2;
+    padding-bottom: 0.5rem;
+  }
+  .h1-display {
+    display: block;
+    font-size: clamp(3.4rem, 0.5rem + 7.2vw, 7.25rem);
+    font-weight: 800;
+    font-stretch: 125%;
+    line-height: 0.86;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+  }
+  .ln {
+    display: block;
+    overflow: hidden;
+    /* espaço para cedilha e acentos sem cortar na animação */
+    padding-block: 0.1em 0.16em;
+    margin-block: -0.1em -0.16em;
+  }
+  .ln > span {
+    display: block;
+    animation: rise 1s var(--ease) both;
+  }
+  .ln:nth-child(2) > span { animation-delay: 0.08s; }
+  .ln:nth-child(3) > span { animation-delay: 0.16s; }
+  .ln:nth-child(4) > span {
+    animation-delay: 0.24s;
+    color: var(--gold);
+  }
+  .h1-sub {
+    display: block;
+    margin-top: 1.75rem;
+    font-family: var(--body);
+    font-size: var(--fs-md);
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.3;
+    color: var(--white);
+  }
+  .hero-text {
+    margin-top: 0.75rem;
+    max-width: 46ch;
+    color: var(--muted);
+    font-size: var(--fs-base);
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+  .hero-sign {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2.5rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--gold);
+    font-size: var(--fs-sm);
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .hero-sign strong {
+    color: var(--white);
+    font-weight: 700;
+  }
+  @keyframes rise {
+    from { transform: translateY(105%); }
+    to { transform: none; }
+  }
+  @keyframes photo-in {
+    from { opacity: 0; transform: scale(1.04); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ───────── Cabeçalho de seção ───────── */
+  .section-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 1.5rem 4rem;
+    align-items: end;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .section-head h2 {
+    max-width: 16ch;
+  }
+
+  /* ───────── Para quem ───────── */
+  .audience {
+    padding-block: clamp(5rem, 10vw, 9rem);
+  }
+  .aud-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .aud-list li {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 0.5rem 4rem;
+    align-items: baseline;
+    padding-block: 1.75rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .aud-list h3 {
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    font-stretch: 112%;
+  }
+  .aud-list p {
+    color: var(--muted);
+    max-width: 44ch;
+  }
+
+  /* ───────── Consultório ───────── */
+  .clinic {
+    padding-block: clamp(4rem, 8vw, 7rem);
+    background: var(--ink);
+  }
+  .clinic-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: center;
+  }
+  .clinic-photo {
+    margin: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+  }
+  .clinic-photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 45%;
+  }
+  .clinic-copy .lede {
+    margin-top: 1.5rem;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 2.5rem;
+    margin: 3rem 0 0;
+  }
+  .facts div {
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+  }
+  .facts dt {
+    font-family: var(--display);
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    font-stretch: 110%;
+    color: var(--gold);
+  }
+  .facts dd {
+    margin: 0.35rem 0 0;
+    color: var(--muted);
+    font-size: 0.975rem;
+    line-height: 1.5;
+  }
+
+  /* ───────── Médico ───────── */
+  .doctor {
+    position: relative;
+    padding-block: clamp(5rem, 11vw, 10rem);
+    background: var(--navy);
+    overflow: hidden;
+  }
+  .doctor-mark {
+    position: absolute;
+    right: -6%;
+    top: 50%;
+    width: min(48vw, 620px);
+    height: auto;
+    transform: translateY(-50%);
+    opacity: 0.06;
+    pointer-events: none;
+  }
+  .doctor-in {
+    position: relative;
+  }
+  .doctor-kicker {
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+  blockquote {
+    margin: 0;
+  }
+  .doctor-quote {
+    max-width: 22ch;
+    font-family: var(--display);
+    font-size: var(--fs-2xl);
+    font-weight: 600;
+    font-stretch: 100%;
+    line-height: 1.06;
+    color: var(--white);
+    text-indent: -0.4em;
+    text-wrap: balance;
+  }
+  .doctor-rest {
+    margin-top: 2rem;
+    max-width: 58ch;
+    font-size: var(--fs-md);
+    line-height: 1.6;
+    color: #c4cad7;
+  }
+  .doctor-id {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin-top: 2.5rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--gold);
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+  .doctor-id strong {
+    color: var(--white);
+    font-size: 1rem;
+  }
+
+  /* ───────── Como funciona ───────── */
+  .steps {
+    padding-block: clamp(5rem, 10vw, 9rem);
+  }
+  .step-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2rem;
+    counter-reset: s;
+  }
+  .step-list li {
+    position: relative;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .step-list li:first-child {
+    border-top-color: var(--gold);
+  }
+  .step-n {
+    display: block;
+    font-family: var(--display);
+    font-size: 4.5rem;
+    font-weight: 300;
+    font-stretch: 75%;
+    line-height: 1;
+    color: var(--line);
+    margin-bottom: 1rem;
+  }
+  .step-list li:first-child .step-n {
+    color: var(--gold);
+  }
+  .step-list h3 {
+    font-size: var(--fs-md);
+  }
+  .step-list p {
+    margin-top: 0.6rem;
+    color: var(--muted);
+    font-size: 0.975rem;
+    line-height: 1.55;
+  }
+
+  /* ───────── Planos ───────── */
+  .plans {
+    padding-block: clamp(5rem, 10vw, 9rem) clamp(3rem, 5vw, 4.5rem);
+    background: linear-gradient(180deg, var(--black) 0%, var(--ink) 100%);
+  }
+  .plan-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+    align-items: stretch;
+  }
+  .plan {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.75rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgb(12 18 32 / 0.6);
+  }
+  .plan-featured {
+    background: var(--navy);
+    border-color: rgb(240 206 128 / 0.55);
+  }
+  .plan-flag {
+    position: absolute;
+    top: -0.8rem;
+    left: 1.75rem;
+    padding: 0.2rem 0.75rem;
+    border-radius: var(--radius-pill);
+    background: var(--gold);
+    color: var(--black);
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  .plan h3 {
+    font-size: var(--fs-lg);
+    font-stretch: 110%;
+    font-weight: 700;
+  }
+  .plan-tag {
+    margin-top: 0.4rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.45;
+    min-height: 2.9em;
+  }
+  .plan-price {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1.75rem;
+  }
+  .amount {
+    font-family: var(--display);
+    font-size: 2.75rem;
+    font-weight: 700;
+    font-stretch: 105%;
+    line-height: 1;
+    color: var(--white);
+  }
+  .plan-featured .amount {
+    color: var(--gold);
+  }
+  .note {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .plan-total {
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .plan ul {
+    list-style: none;
+    margin: 1.75rem 0 2rem;
+    padding: 1.5rem 0 0;
+    border-top: 1px solid var(--line);
+    display: grid;
+    gap: 0.75rem;
+    flex: 1;
+    align-content: start;
+  }
+  .plan li {
+    position: relative;
+    padding-left: 1.4rem;
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+  .plan li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold);
+  }
+  .plans-note {
+    margin-top: 1.5rem;
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+
+  /* ───────── FAQ ───────── */
+  .faq {
+    padding-block: clamp(5rem, 10vw, 9rem);
+    background: var(--ink);
+  }
+  .faq-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 3rem clamp(2rem, 6vw, 6rem);
+    align-items: start;
+  }
+  .faq-head {
+    position: sticky;
+    top: 7rem;
+  }
+  .faq-head h2 {
+    font-size: var(--fs-xl);
+    max-width: 14ch;
+  }
+  .faq-head .lede {
+    margin-top: 1.25rem;
+  }
+  details {
+    border-bottom: 1px solid var(--line);
+  }
+  details:first-child {
+    border-top: 1px solid var(--line);
+  }
+  summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    padding-block: 1.4rem;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary h3 {
+    font-size: var(--fs-md);
+    font-weight: 600;
+  }
+  summary::after {
+    content: '';
+    flex: none;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-right: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+    transform: translateY(-25%) rotate(45deg);
+    transition: transform 0.3s var(--ease);
+  }
+  details[open] summary::after {
+    transform: translateY(25%) rotate(-135deg);
+  }
+  details p {
+    padding-bottom: 1.5rem;
+    color: var(--muted);
+    max-width: 62ch;
+  }
+
+  /* ───────── CTA final ───────── */
+  .closing {
+    padding-block: clamp(5rem, 11vw, 10rem);
+    background: radial-gradient(90% 120% at 0% 100%, var(--navy) 0%, transparent 65%), var(--black);
+  }
+  .closing-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: 3rem clamp(2rem, 6vw, 6rem);
+    align-items: end;
+  }
+  .closing h2 {
+    font-size: clamp(2.6rem, 1.2rem + 5.5vw, 5.5rem);
+    font-stretch: 118%;
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+    max-width: 14ch;
+    margin-bottom: 2.5rem;
+  }
+  .where {
+    font-style: normal;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .where p + p {
+    margin-top: 0.25rem;
+  }
+  .where-label {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: var(--fs-sm);
+  }
+  .where-label:not(:first-child) {
+    margin-top: 1.5rem !important;
+  }
+  .link {
+    color: var(--white);
+    text-decoration: underline;
+    text-decoration-color: var(--gold);
+    text-underline-offset: 0.25em;
+    text-decoration-thickness: 1px;
+  }
+  .link:hover {
+    color: var(--gold);
+  }
+
+  /* ───────── Rodapé ───────── */
+  .site-foot {
+    padding-block: 3rem;
+    border-top: 1px solid rgb(255 255 255 / 0.08);
+  }
+  .foot-in {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+  .foot-logo {
+    width: 170px;
+    height: auto;
+  }
+  .foot-legal {
+    font-size: var(--fs-sm);
+    color: var(--muted);
+    text-align: right;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .mobile-cta {
+    display: none;
+  }
+
+  /* ───────── Responsivo ───────── */
+  @media (max-width: 980px) {
+    nav {
+      display: none;
+    }
+    .hero-photo {
+      grid-column: 6 / -1;
+    }
+    .hero-copy {
+      grid-column: 1 / -1;
+    }
+    .plan-grid {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 560px;
+    }
+    .plan-featured {
+      order: -1;
+    }
+    .step-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 3rem;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .topbar-cta {
+      display: none;
+    }
+    .hero {
+      padding-top: 1.5rem;
+    }
+    .hero-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .hero-photo {
+      grid-column: 1;
+      grid-row: 1;
+      aspect-ratio: 4 / 4.6;
+      border-radius: 160px 160px var(--radius) var(--radius);
+      width: 78%;
+      justify-self: end;
+    }
+    .hero-copy {
+      grid-column: 1;
+      grid-row: 2;
+      margin-top: -4.5rem;
+    }
+    .hero-actions .btn {
+      width: 100%;
+    }
+    .section-head,
+    .aud-list li,
+    .clinic-grid,
+    .faq-grid,
+    .closing-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .faq-head {
+      position: static;
+    }
+    .clinic-photo {
+      aspect-ratio: 4 / 4;
+    }
+    .facts {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.25rem;
+    }
+    .step-list {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 2rem;
+    }
+    .step-n {
+      font-size: 3rem;
+    }
+    .doctor-mark {
+      width: 90vw;
+      right: -30%;
+    }
+    .foot-legal {
+      text-align: left;
+    }
+    .site-foot {
+      padding-bottom: 6.5rem;
+    }
+    .mobile-cta {
+      display: inline-flex;
+      position: fixed;
+      left: 1rem;
+      right: 1rem;
+      bottom: max(1rem, env(safe-area-inset-bottom));
+      z-index: 60;
+      box-shadow: 0 10px 30px rgb(0 0 0 / 0.6);
+      transform: translateY(160%);
+      transition: transform 0.4s var(--ease);
+    }
+    :global(.show-cta) .mobile-cta {
+      transform: none;
+    }
+    .closing .btn {
+      width: 100%;
+    }
+  }
+</style>
