@@ -1,0 +1,18 @@
+{
+  "name": "brvitta-landing",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.6",
+    "@fontsource-variable/anek-latin": "^5.3.0",
+    "@fontsource-variable/raleway": "^5.3.0",
+    "astro": "^7.4.13",
+    "sharp": "^0.35.5"
+  }
+}
