@@ -2,7 +2,7 @@
 import { Picture, Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import WhatsIcon from '../components/WhatsIcon.astro';
-import { site, plans, faqs, whatsappLink } from '../config/site';
+import { site, faqs, whatsappLink } from '../config/site';
 
 import drBruno from '../assets/dr-bruno.webp';
 import consultorio from '../assets/consultorio.png';
@@ -33,7 +33,7 @@ const audiences = [
 ];
 
 const steps = [
-  { t: 'Chame no WhatsApp', d: 'Tire suas dúvidas, escolha o plano e reserve o seu horário.' },
+  { t: 'Chame no WhatsApp', d: 'Tire suas dúvidas, consulte valores e reserve o seu horário.' },
   { t: 'Conte sua história', d: 'Antes da consulta, você responde uma anamnese sobre saúde, rotina e objetivos.' },
   {
     t: 'Consulta presencial',
@@ -53,7 +53,7 @@ const steps = [
       <nav aria-label="Seções">
         <a href="#para-quem">Para quem é</a>
         <a href="#medico">O médico</a>
-        <a href="#planos">Planos</a>
+        <a href="#como-funciona">Como funciona</a>
         <a href="#duvidas">Dúvidas</a>
       </nav>
       <a class="btn btn-gold topbar-cta" href={whatsappLink()} data-origem="topo" target="_blank" rel="noopener">
@@ -99,7 +99,7 @@ const steps = [
             <a class="btn btn-gold btn-lg" href={whatsappLink()} data-origem="hero" target="_blank" rel="noopener">
               <WhatsIcon /> Agendar pelo WhatsApp
             </a>
-            <a class="btn btn-ghost btn-lg" href="#planos">Ver planos e valores</a>
+            <a class="btn btn-ghost btn-lg" href="#como-funciona">Como funciona</a>
           </div>
 
           <p class="hero-sign">
@@ -214,47 +214,6 @@ const steps = [
             ))
           }
         </ol>
-      </div>
-    </section>
-
-    <!-- ───────── Planos ───────── -->
-    <section id="planos" class="plans">
-      <div class="wrap">
-        <div class="section-head">
-          <h2>Escolha o ritmo do seu cuidado.</h2>
-          <p class="lede">Comece com uma consulta ou garanta o acompanhamento completo. Valores transparentes, sem surpresa.</p>
-        </div>
-        <div class="plan-grid">
-          {
-            plans.map((p) => (
-              <article class:list={['plan', { 'plan-featured': p.featured }]}>
-                {p.featured && <p class="plan-flag">Mais completo</p>}
-                <h3>{p.name}</h3>
-                <p class="plan-tag">{p.tagline}</p>
-                <p class="plan-price">
-                  <span class="amount">{p.price}</span>
-                  <span class="note">{p.priceNote}</span>
-                </p>
-                <p class="plan-total">{p.priceTotal ?? ' '}</p>
-                <ul role="list">
-                  {p.items.map((it) => (
-                    <li>{it}</li>
-                  ))}
-                </ul>
-                <a
-                  class:list={['btn', p.featured ? 'btn-gold' : 'btn-ghost']}
-                  href={whatsappLink(`Olá! Vim pelo site e tenho interesse no plano ${p.name}. Pode me passar os horários disponíveis?`)}
-                  data-origem={`plano-${p.id}`}
-                  target="_blank"
-                  rel="noopener"
-                >
-                  <WhatsIcon /> Quero este plano
-                </a>
-              </article>
-            ))
-          }
-        </div>
-        <p class="plans-note">Parcelamento sujeito à forma de pagamento escolhida. Desconto de 5% no pagamento à vista dos planos.</p>
       </div>
     </section>
 
@@ -699,112 +658,6 @@ const steps = [
     line-height: 1.55;
   }
 
-  /* ───────── Planos ───────── */
-  .plans {
-    padding-block: clamp(5rem, 10vw, 9rem) clamp(3rem, 5vw, 4.5rem);
-    background: linear-gradient(180deg, var(--black) 0%, var(--ink) 100%);
-  }
-  .plan-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.25rem;
-    align-items: stretch;
-  }
-  .plan {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    padding: 2rem 1.75rem;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: rgb(12 18 32 / 0.6);
-  }
-  .plan-featured {
-    background: var(--navy);
-    border-color: rgb(240 206 128 / 0.55);
-  }
-  .plan-flag {
-    position: absolute;
-    top: -0.8rem;
-    left: 1.75rem;
-    padding: 0.2rem 0.75rem;
-    border-radius: var(--radius-pill);
-    background: var(--gold);
-    color: var(--black);
-    font-size: 0.8rem;
-    font-weight: 700;
-  }
-  .plan h3 {
-    font-size: var(--fs-lg);
-    font-stretch: 110%;
-    font-weight: 700;
-  }
-  .plan-tag {
-    margin-top: 0.4rem;
-    color: var(--muted);
-    font-size: 0.95rem;
-    line-height: 1.45;
-    min-height: 2.9em;
-  }
-  .plan-price {
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-top: 1.75rem;
-  }
-  .amount {
-    font-family: var(--display);
-    font-size: 2.75rem;
-    font-weight: 700;
-    font-stretch: 105%;
-    line-height: 1;
-    color: var(--white);
-  }
-  .plan-featured .amount {
-    color: var(--gold);
-  }
-  .note {
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-  .plan-total {
-    margin-top: 0.4rem;
-    font-size: 0.85rem;
-    color: var(--muted);
-  }
-  .plan ul {
-    list-style: none;
-    margin: 1.75rem 0 2rem;
-    padding: 1.5rem 0 0;
-    border-top: 1px solid var(--line);
-    display: grid;
-    gap: 0.75rem;
-    flex: 1;
-    align-content: start;
-  }
-  .plan li {
-    position: relative;
-    padding-left: 1.4rem;
-    font-size: 0.95rem;
-    line-height: 1.45;
-  }
-  .plan li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.5em;
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    border: 1.5px solid var(--gold);
-  }
-  .plans-note {
-    margin-top: 1.5rem;
-    font-size: var(--fs-sm);
-    color: var(--muted);
-  }
-
   /* ───────── FAQ ───────── */
   .faq {
     padding-block: clamp(5rem, 10vw, 9rem);
@@ -953,13 +806,6 @@ const steps = [
     }
     .hero-copy {
       grid-column: 1 / -1;
-    }
-    .plan-grid {
-      grid-template-columns: minmax(0, 1fr);
-      max-width: 560px;
-    }
-    .plan-featured {
-      order: -1;
     }
     .step-list {
       grid-template-columns: repeat(2, minmax(0, 1fr));

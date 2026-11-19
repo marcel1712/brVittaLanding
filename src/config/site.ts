@@ -62,59 +62,6 @@ export function whatsappLink(message: string = site.whatsapp.defaultMessage) {
   return `https://wa.me/${site.whatsapp.number}?text=${encodeURIComponent(message)}`;
 }
 
-export const plans = [
-  {
-    id: 'avulsa',
-    name: 'Consulta Avulsa',
-    tagline: 'Para conhecer o método e sair com um plano claro.',
-    price: 'R$ 500',
-    priceNote: 'pagamento único',
-    priceTotal: null,
-    featured: false,
-    items: [
-      'Consulta médica completa, de 50 a 60 minutos',
-      'Análise e interpretação de exames laboratoriais',
-      'Avaliação de composição corporal (InBody)',
-      'Planejamento de treino, nutrição, suplementação e estilo de vida',
-      '1 retorno incluído em até 1 mês',
-      'Suporte pontual para dúvidas pelo WhatsApp',
-    ],
-  },
-  {
-    id: 'evolution',
-    name: 'Vitta Evolution',
-    tagline: 'Seis meses de acompanhamento, com ajustes a cada etapa.',
-    price: 'R$ 250',
-    priceNote: '/mês em até 6x',
-    priceTotal: 'R$ 1.500 no total, ou R$ 1.425 à vista',
-    featured: false,
-    items: [
-      '4 consultas em 6 meses, a cada 2 meses',
-      'Composição corporal em todas as consultas',
-      'Acompanhamento de exames laboratoriais',
-      'Ajustes contínuos de treino, nutrição e suplementação',
-      'Suporte para dúvidas pelo WhatsApp',
-    ],
-  },
-  {
-    id: 'performance',
-    name: 'Vitta Performance',
-    tagline: 'Um ano inteiro de cuidado, para resultado que se sustenta.',
-    price: 'R$ 208,33',
-    priceNote: '/mês em até 12x',
-    priceTotal: 'R$ 2.500 no total, ou R$ 2.375 à vista',
-    featured: true,
-    items: [
-      '7 consultas em 12 meses, a cada 2 meses',
-      'Composição corporal em todas as consultas',
-      'Acompanhamento de exames laboratoriais',
-      'Ajustes contínuos de treino, nutrição e suplementação',
-      'Suporte para dúvidas pelo WhatsApp',
-      'Acompanhamento por 12 meses',
-    ],
-  },
-] as const;
-
 export const faqs = [
   {
     q: 'Preciso praticar esporte para ser atendido?',
@@ -126,22 +73,22 @@ export const faqs = [
   },
   {
     q: 'O atendimento é presencial ou online?',
-    a: 'A primeira consulta é presencial, no consultório em Santo André. Os retornos podem ser presenciais ou por teleconsulta, conforme o seu plano.',
+    a: 'A primeira consulta é presencial, no consultório em Santo André. Os retornos podem ser presenciais ou por teleconsulta, conforme o acompanhamento combinado.',
   },
   {
     q: 'Onde fica o consultório?',
     a: 'Em Santo André, SP. O endereço completo e as orientações de chegada são enviados na confirmação do agendamento.',
   },
   {
-    q: 'Preciso assinar um plano ou posso fazer uma consulta única?',
-    a: 'A consulta avulsa é a porta de entrada mais comum. Se fizer sentido continuar, os planos de acompanhamento são apresentados na própria consulta, sem compromisso.',
+    q: 'Quanto custa a consulta?',
+    a: 'Os valores e as formas de pagamento são informados pelo WhatsApp, junto com os horários disponíveis. Se fizer sentido continuar depois da primeira consulta, as opções de acompanhamento são apresentadas sem compromisso.',
   },
   {
     q: 'Atende convênio?',
-    a: 'O atendimento é particular. Emitimos recibo e relatório para você solicitar reembolso ao seu convênio, quando o plano prevê essa possibilidade.',
+    a: 'O atendimento é particular. Emitimos recibo e relatório para você solicitar reembolso ao seu convênio, quando o seu convênio prevê essa possibilidade.',
   },
   {
     q: 'Como faço para agendar?',
-    a: 'Pelo WhatsApp. Você fala direto com a nossa equipe, tira as dúvidas e escolhe o melhor horário.',
+    a: 'Pelo WhatsApp. Você fala direto com a nossa equipe, tira as dúvidas, consulta valores e escolhe o melhor horário.',
   },
 ] as const;

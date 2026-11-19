@@ -17,7 +17,7 @@ npm run build    # gera dist/
 | O quê | Arquivo |
 | --- | --- |
 | WhatsApp, CRM, endereço, horários, domínio, analytics | `src/config/site.ts` |
-| Planos e preços, perguntas frequentes | `src/config/site.ts` |
+| Perguntas frequentes | `src/config/site.ts` |
 | Textos e seções | `src/pages/index.astro` |
 | Meta tags, dados estruturados | `src/layouts/Base.astro` |
 | Domínio do sitemap | `astro.config.mjs` e `public/robots.txt` |
@@ -42,4 +42,5 @@ npm run build    # gera dist/
 - Nome + CRM visíveis (já no hero, na seção do médico e no rodapé — basta preencher o número).
 - Sem RQE, o médico **não pode se anunciar como especialista** (ex.: "médico do esporte", "nutrólogo").
   O texto do site fala em *atuação* em saúde, emagrecimento e performance de propósito.
-- Divulgar preço é permitido. Não prometer resultado.
+- Não prometer resultado.
+- Preços e planos **não** aparecem no site por decisão do negócio: são tratados no WhatsApp até o lançamento da plataforma.

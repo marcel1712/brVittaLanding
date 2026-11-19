@@ -3,7 +3,7 @@ import '@fontsource-variable/anek-latin/standard.css';
 import '@fontsource-variable/raleway';
 import '../styles/global.css';
 import anekLatin from '@fontsource-variable/anek-latin/files/anek-latin-latin-standard-normal.woff2?url';
-import { site, faqs, plans } from '../config/site';
+import { site, faqs } from '../config/site';
 
 interface Props {
   title: string;
@@ -29,7 +29,6 @@ const jsonLd = {
       image: ogImage,
       logo: new URL('/icon-512.png', site.url).toString(),
       telephone: `+${site.whatsapp.number}`,
-      priceRange: 'R$ 500 – R$ 2.500',
       currenciesAccepted: 'BRL',
       isAcceptedAsPayment: false,
       medicalSpecialty: ['PrimaryCare'],
@@ -55,13 +54,6 @@ const jsonLd = {
         closes: h.closes,
       })),
       employee: { '@id': doctorId },
-      makesOffer: plans.map((p) => ({
-        '@type': 'Offer',
-        name: p.name,
-        description: p.tagline,
-        priceCurrency: 'BRL',
-        price: p.id === 'avulsa' ? '500' : p.id === 'evolution' ? '1500' : '2500',
-      })),
       sameAs: [site.instagram].filter(Boolean),
     },
     {
