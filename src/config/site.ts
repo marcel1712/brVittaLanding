@@ -22,17 +22,16 @@ export const site = {
   whatsapp: {
     // Link de mensagem do WhatsApp Business: a mensagem inicial é configurada no app, não aqui
     url: 'https://wa.me/message/PITG5TRLITNXD1',
-    // TODO (opcional, ajuda no SEO local): telefone com DDI + DDD, só dígitos, igual ao do Perfil da
-    // Empresa no Google. Ex.: '5511999999999'. Vazio = o telefone não entra nos dados estruturados.
-    number: '',
+    // Telefone com DDI + DDD, só dígitos. Entra nos dados estruturados do Google e deve ser o mesmo
+    // do Perfil da Empresa. Vazio = o telefone não é publicado.
+    number: '5511965844310',
   },
 
   // Manter idêntico ao Perfil da Empresa no Google (NAP consistente)
   address: {
     building: 'Edifício Works',
     street: 'Av. Dom Pedro II, 1641',
-    // TODO: número da sala, se quiser exibir (ex.: 'Sala 52')
-    unit: '',
+    unit: 'Sala 11',
     neighborhood: 'Campestre',
     city: 'Santo André',
     state: 'SP',
