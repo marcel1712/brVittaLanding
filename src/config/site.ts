@@ -6,8 +6,8 @@
  */
 
 export const site = {
-  // TODO: domínio definitivo (sem barra no final). Também atualizar em astro.config.mjs
-  url: 'https://brvitta.com.br',
+  // Domínio definitivo (sem barra no final). Manter igual em astro.config.mjs e public/robots.txt
+  url: 'https://www.brvitta.com.br',
   name: 'Vitta Performance',
   shortName: 'BrVitta',
 
@@ -69,7 +69,6 @@ export const site = {
   openingHoursLabel: 'Segunda a sexta, das 8h às 19h',
 
   instagram: '', // TODO: ex.: https://instagram.com/brvitta (deixe vazio para ocultar)
-  platformUrl: 'https://brvitta.vercel.app/login',
 
   // Analytics/conversão (opcional). Deixe vazio para não carregar nada.
   analytics: {

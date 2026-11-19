@@ -350,11 +350,8 @@ const a = site.address;
       <div class="foot-legal">
         <p>Responsável técnico: {site.doctor.name} · {site.doctor.crm}</p>
         <p>{a.building} · {a.street} · {a.city} – {a.state}</p>
-        <p>
-          Já é paciente? <a href={site.platformUrl} class="link" rel="noopener">Entrar na plataforma</a>
-          {site.instagram && <> · <a href={site.instagram} class="link" rel="noopener" target="_blank">Instagram</a></>}
-        </p>
-        <p>© {new Date().getFullYear()} Vitta Performance.</p>
+        {site.instagram && <p><a href={site.instagram} class="link" rel="noopener" target="_blank">Instagram</a></p>}
+        <p>©{new Date().getFullYear()} Vitta Performance.</p>
       </div>
     </div>
   </footer>
