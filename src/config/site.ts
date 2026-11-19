@@ -14,16 +14,17 @@ export const site = {
   doctor: {
     name: 'Dr. Bruno Ricardo Rodrigues Batista',
     displayName: 'Dr. Bruno Ricardo',
-    // TODO: número do CRM (obrigatório em toda publicidade médica — Res. CFM 2.336/2023)
-    crm: 'CRM-SP 000000',
+    // Obrigatório em toda publicidade médica (Res. CFM 2.336/2023)
+    crm: 'CRM-SP 279822',
     education: 'Medicina pela Universidade Municipal de São Caetano do Sul (USCS)',
   },
 
   whatsapp: {
-    // TODO: número com DDI + DDD, só dígitos. Ex.: 5511999999999
-    number: '5511900000000',
-    defaultMessage:
-      'Olá! Vim pelo site da BrVitta e gostaria de agendar uma consulta com o Dr. Bruno.',
+    // Link de mensagem do WhatsApp Business: a mensagem inicial é configurada no app, não aqui
+    url: 'https://wa.me/message/PITG5TRLITNXD1',
+    // TODO (opcional, ajuda no SEO local): telefone com DDI + DDD, só dígitos, igual ao do Perfil da
+    // Empresa no Google. Ex.: '5511999999999'. Vazio = o telefone não entra nos dados estruturados.
+    number: '',
   },
 
   // Manter idêntico ao Perfil da Empresa no Google (NAP consistente)
@@ -77,8 +78,8 @@ export const site = {
   },
 } as const;
 
-export function whatsappLink(message: string = site.whatsapp.defaultMessage) {
-  return `https://wa.me/${site.whatsapp.number}?text=${encodeURIComponent(message)}`;
+export function whatsappLink() {
+  return site.whatsapp.url;
 }
 
 export const faqs = [

@@ -14,9 +14,10 @@ import imgDisposicao from '../assets/obj-disposicao.jpg';
 import monograma from '../assets/monograma.png';
 import logoCompleto from '../assets/logo-completo.png';
 
-const title = 'Dr. Bruno Ricardo | Saúde, emagrecimento e performance em Santo André';
+// Título ≤ 60 caracteres e descrição ≤ 155, para não serem cortados no resultado do Google
+const title = 'Dr. Bruno Ricardo | Emagrecimento e Saúde em Santo André';
 const description =
-  'Seu melhor está por vir. Saúde, emagrecimento e performance com acompanhamento médico individualizado em Santo André: consulta de 50 a 60 minutos, avaliação corporal com InBody e leitura de exames.';
+  'Consulta médica de 50 a 60 minutos em Santo André: avaliação corporal InBody, leitura de exames e plano individual de saúde, emagrecimento e performance.';
 
 const goals = [
   {
@@ -102,7 +103,7 @@ const a = site.address;
             <span class="ht-w"><span>Seu</span></span>
             <span class="pill" aria-hidden="true" data-cycle style="--pd: 0.55s">
               {pillA.map((src, i) => (
-                <Image src={src} alt="" widths={[420]} sizes="12rem" class:list={{ on: i === 0 }} loading="eager" />
+                <Image src={src} alt="" widths={[420]} sizes="12rem" quality={55} class:list={{ on: i === 0 }} loading={i === 0 ? 'eager' : 'lazy'} />
               ))}
             </span>
             <span class="ht-w"><span style="--wd: 0.08s">melhor</span></span>
@@ -111,7 +112,7 @@ const a = site.address;
             <span class="ht-w"><span style="--wd: 0.16s">está por</span></span>
             <span class="pill" aria-hidden="true" data-cycle style="--pd: 0.75s">
               {pillB.map((src, i) => (
-                <Image src={src} alt="" widths={[420]} sizes="12rem" class:list={{ on: i === 0 }} loading="eager" />
+                <Image src={src} alt="" widths={[420]} sizes="12rem" quality={55} class:list={{ on: i === 0 }} loading={i === 0 ? 'eager' : 'lazy'} />
               ))}
             </span>
             <span class="ht-w"><span style="--wd: 0.24s">vir.</span></span>
@@ -132,8 +133,18 @@ const a = site.address;
     <!-- ───────── Faixa de fotos (desliza com a rolagem) ───────── -->
     <div class="strip" data-strip aria-hidden="true">
       <div class="strip-track" data-strip-track>
-        {strip.map((src) => (
-          <Image src={src} alt="" widths={[360, 640]} sizes="(min-width: 760px) 30vw, 60vw" class="strip-img" />
+        {strip.map((src, i) => (
+          // as fotos visíveis na primeira tela são o LCP: carregam já e com prioridade
+          <Image
+            src={src}
+            alt=""
+            widths={[360, 640]}
+            sizes="(min-width: 760px) 30vw, 60vw"
+            quality={55}
+            class="strip-img"
+            loading={i < 3 ? 'eager' : 'lazy'}
+            fetchpriority={i < 2 ? 'high' : 'auto'}
+          />
         ))}
       </div>
     </div>

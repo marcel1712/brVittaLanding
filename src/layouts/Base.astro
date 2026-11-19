@@ -28,9 +28,8 @@ const jsonLd = {
       url: site.url,
       image: ogImage,
       logo: new URL('/icon-512.png', site.url).toString(),
-      telephone: `+${site.whatsapp.number}`,
+      ...(site.whatsapp.number ? { telephone: `+${site.whatsapp.number}` } : {}),
       currenciesAccepted: 'BRL',
-      isAcceptedAsPayment: false,
       medicalSpecialty: ['PrimaryCare'],
       description:
         'Consultório médico em Santo André focado em saúde, emagrecimento, composição corporal e performance física, com acompanhamento individualizado.',
