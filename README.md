@@ -24,7 +24,7 @@ npm run build    # gera dist/
 
 ## Checklist antes de publicar
 
-- [ ] Preencher todos os `TODO` de `src/config/site.ts` (WhatsApp, **CRM**, endereço, coordenadas, horários, link do Maps)
+- [ ] Preencher os `TODO` restantes de `src/config/site.ts` (coordenadas exatas do pino, andares do prédio, horários, telefone, Instagram)
 - [ ] Trocar o domínio em `astro.config.mjs`, `public/robots.txt` e `site.url`
 - [ ] Deploy na Vercel (importar o repositório — detecta Astro sozinha) e apontar o domínio
 - [ ] (Opcional) IDs do Google Ads/GA4 e Meta Pixel em `site.analytics` — os cliques no WhatsApp já disparam evento `whatsapp_click` / `Contact`

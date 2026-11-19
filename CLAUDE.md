@@ -18,7 +18,7 @@ Para medir performance use o build (`dist/`), não o `dev`: o servidor de desenv
 
 ## Arquitetura
 
-- [src/config/site.ts](src/config/site.ts) é a fonte única dos dados do negócio: WhatsApp, CRM, endereço, coordenadas, horários, domínio, IDs de analytics, FAQ e `whatsappLink()`. Campos `TODO` ali ainda têm valores de exemplo (CRM `000000`, WhatsApp e endereço fictícios) e precisam ser preenchidos antes de publicar.
+- [src/config/site.ts](src/config/site.ts) é a fonte única dos dados do negócio: WhatsApp, CRM, endereço, coordenadas, horários, domínio, IDs de analytics, FAQ e `whatsappLink()`. O WhatsApp é um link de mensagem do WhatsApp Business (`wa.me/message/...`): a mensagem inicial é configurada no app, não no código, e o telefone (`whatsapp.number`) fica vazio até alguém passar o número real. Campos `TODO` ali ainda são estimativas: coordenadas do pino, número de andares do prédio e horários.
 - [src/layouts/Base.astro](src/layouts/Base.astro) monta todo o SEO a partir dessa config: meta tags, Open Graph, JSON-LD (`MedicalClinic`, `Physician`, `WebSite`, `FAQPage`), analytics opcional (Google tag / Meta Pixel só carregam se o ID estiver preenchido) e o script que dispara `whatsapp_click`/`Contact` em qualquer link `https://wa.me/` usando o atributo `data-origem`.
 - [src/pages/index.astro](src/pages/index.astro) contém todas as seções, o CSS escopado delas e o `<script>` com as interações (ver Animações abaixo). [src/styles/global.css](src/styles/global.css) tem só tokens, tipografia e botões.
 - O FAQ vem de `faqs` em `site.ts` e alimenta tanto a página quanto o JSON-LD, então um texto só precisa ser editado ali.
