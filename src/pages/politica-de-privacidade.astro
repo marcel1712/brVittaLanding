@@ -1,0 +1,155 @@
+---
+/**
+ * Política de privacidade (LGPD). O trecho sobre medição de audiência muda sozinho conforme
+ * os IDs de analytics em src/config/site.ts: ao ligar o Google Analytics ou o Meta Pixel,
+ * revisar este texto e a necessidade de um aviso de cookies.
+ */
+import Base from '../layouts/Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { site, whatsappLink } from '../config/site';
+
+const a = site.address;
+const endereco = `${a.street}${a.unit ? ` – ${a.unit}` : ''}, ${a.building}, ${a.neighborhood}, ${a.city} – ${a.state}, CEP ${a.postalCode}`;
+const telefone = site.whatsapp.number.replace(/^55(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+const { googleTagId, metaPixelId } = site.analytics;
+const temMedicao = Boolean(googleTagId || metaPixelId);
+const ferramentas = [googleTagId && 'Google Analytics', metaPixelId && 'Meta Pixel'].filter(Boolean).join(' e ');
+const atualizada = '19 de novembro de 2026';
+---
+
+<Base
+  title="Política de privacidade | Vitta Performance"
+  description="Como a Vitta Performance, consultório do Dr. Bruno Ricardo em Santo André, trata os dados pessoais de quem visita o site e agenda consultas."
+  path="/politica-de-privacidade/"
+>
+  <SiteHeader />
+  <main id="conteudo" class="legal">
+    <article class="wrap legal-in">
+      <h1>Política de privacidade</h1>
+      <p class="legal-date">Atualizada em {atualizada}.</p>
+
+      <p>
+        Esta política explica como a <strong>Vitta Performance</strong>, consultório do {site.doctor.name}
+        ({site.doctor.crm}), trata os dados pessoais de quem visita este site e de quem entra em contato para agendar
+        uma consulta, de acordo com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).
+      </p>
+
+      <h2>Quem é o responsável pelos seus dados</h2>
+      <p>
+        Vitta Performance — {endereco}. Contato para assuntos de privacidade: WhatsApp {telefone}.
+      </p>
+
+      <h2>Quais dados tratamos</h2>
+      <ul>
+        <li>
+          <strong>Navegação no site:</strong> como em qualquer site, o servidor de hospedagem registra dados técnicos de
+          acesso, como endereço IP, navegador e páginas visitadas, usados para manter o site funcionando e seguro.
+        </li>
+        <li>
+          <strong>Contato e agendamento:</strong> ao clicar em “Agendar”, você é levado ao WhatsApp. Lá, tratamos os
+          dados que você nos envia, como nome, telefone e mensagens, para responder dúvidas, informar valores e agendar
+          a consulta.
+        </li>
+        <li>
+          <strong>Dados de saúde:</strong> informações sobre a sua saúde que você compartilha no contato ou na consulta
+          são tratadas com sigilo médico e usadas apenas para o seu atendimento.
+        </li>
+      </ul>
+
+      <h2>Cookies e medição de audiência</h2>
+      {
+        temMedicao ? (
+          <p>
+            Usamos ferramentas de medição de audiência ({ferramentas}), que usam cookies para contar visitas e entender quais páginas e anúncios trazem pacientes. Os dados são
+            estatísticos e não são usados para identificar você pessoalmente. Você pode bloquear ou apagar cookies nas
+            configurações do seu navegador.
+          </p>
+        ) : (
+          <p>
+            Este site não usa cookies de rastreamento, de publicidade ou de medição de audiência. As fontes e as imagens
+            são servidas pelo próprio site.
+          </p>
+        )
+      }
+
+      <h2>Para que usamos os dados e com qual base legal</h2>
+      <ul>
+        <li>Responder seu contato e agendar consultas, a seu pedido.</li>
+        <li>Prestar o atendimento médico, para a tutela da sua saúde.</li>
+        <li>Manter o site seguro e funcionando{temMedicao && ' e medir, de forma estatística, o alcance do site'}.</li>
+        <li>Cumprir obrigações legais e regulatórias, como a guarda do prontuário médico.</li>
+      </ul>
+
+      <h2>Com quem os dados são compartilhados</h2>
+      <p>
+        Não vendemos dados pessoais. Para o site e o contato funcionarem, usamos serviços de terceiros: a hospedagem do
+        site (Vercel), o mapa da página (OpenFreeMap, que recebe o endereço IP de quem visualiza o mapa) e o WhatsApp
+        (Meta), que tem a própria política de privacidade{temMedicao && ', além das ferramentas de medição citadas acima'}.
+        Dados também podem ser compartilhados com autoridades quando a lei exigir.
+      </p>
+
+      <h2>Por quanto tempo guardamos</h2>
+      <p>
+        As conversas de agendamento são mantidas pelo tempo necessário para o atendimento. O prontuário médico é guardado
+        pelo prazo mínimo previsto em lei (atualmente 20 anos a partir do último registro, conforme a Lei nº
+        13.787/2018).
+      </p>
+
+      <h2>Seus direitos</h2>
+      <p>
+        Você pode pedir a confirmação de que tratamos seus dados, o acesso, a correção, a anonimização, a portabilidade
+        ou a eliminação deles, informações sobre com quem foram compartilhados e a revogação de um consentimento, nos
+        termos do art. 18 da LGPD. Basta falar com a gente pelo
+        <a class="link" href={whatsappLink()} target="_blank" rel="noopener" data-origem="privacidade">WhatsApp</a>.
+        Você também pode reclamar à Autoridade Nacional de Proteção de Dados (ANPD).
+      </p>
+
+      <h2>Segurança</h2>
+      <p>
+        O site usa conexão criptografada (HTTPS), e o acesso às informações de pacientes é restrito à equipe responsável
+        pelo atendimento.
+      </p>
+
+      <h2>Alterações</h2>
+      <p>Esta política pode ser atualizada. A data da última versão aparece no início da página.</p>
+    </article>
+  </main>
+  <SiteFooter />
+</Base>
+
+<style>
+  .legal {
+    background: var(--ink);
+  }
+  .legal-in {
+    max-width: calc(46rem + 2 * var(--gutter));
+    padding-block: clamp(3.5rem, 8vw, 6rem);
+  }
+  .legal h1 {
+    font-size: var(--fs-2xl);
+  }
+  .legal-date {
+    margin-top: 0.75rem;
+    color: var(--muted);
+    font-size: var(--fs-sm);
+  }
+  .legal h2 {
+    margin-top: 2.5rem;
+    font-size: var(--fs-lg);
+    font-stretch: 105%;
+  }
+  .legal p,
+  .legal ul {
+    margin-top: 1rem;
+    color: #c4cad7;
+  }
+  .legal ul {
+    padding-left: 1.25rem;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .legal strong {
+    color: var(--white);
+  }
+</style>

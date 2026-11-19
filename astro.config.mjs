@@ -5,7 +5,8 @@ import sitemap from '@astrojs/sitemap';
 // manter igual a site.url em src/config/site.ts
 export default defineConfig({
   site: 'https://www.brvitta.com.br',
-  integrations: [sitemap()],
+  // lastmod = data do build; a 404 não entra no sitemap
+  integrations: [sitemap({ lastmod: new Date(), filter: (page) => !page.includes('/404') })],
   build: { inlineStylesheets: 'always' },
   compressHTML: true,
   // o chunk do MapLibre (~1,1 MB, ~280 KB gzip) só carrega quando o mapa entra na tela
