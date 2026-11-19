@@ -7,6 +7,14 @@ import { site, faqs, whatsappLink } from '../config/site';
 import drBruno from '../assets/dr-bruno.webp';
 import consultorio from '../assets/consultorio.png';
 import movimento from '../assets/movimento.jpg';
+import pillTenis from '../assets/pill-tenis.jpg';
+import pillHalterofilia from '../assets/pill-halterofilia.jpg';
+import pillVolei from '../assets/pill-volei.jpg';
+import pillNatacao from '../assets/pill-natacao.jpg';
+import pillCorridaSenior from '../assets/pill-corrida-senior.jpg';
+import pillCiclismo from '../assets/pill-ciclismo.jpg';
+import pillFutebol from '../assets/pill-futebol.jpg';
+import pillConsulta from '../assets/pill-consulta.jpg';
 import imgEmagrecer from '../assets/obj-emagrecer.jpg';
 import imgMassa from '../assets/obj-massa.jpg';
 import imgEsporte from '../assets/obj-esporte.jpg';
@@ -63,9 +71,11 @@ const steps = [
   { t: 'Acompanhamento', d: 'Retornos, ajustes e suporte pelo WhatsApp para manter a evolução.' },
 ];
 
-// cápsulas de foto dentro do título (alternam sozinhas)
-const pillA = [imgEmagrecer, imgEsporte, movimento];
-const pillB = [imgMassa, imgDisposicao];
+// cápsulas de foto dentro do título (alternam sozinhas). Só fotos nítidas, recortadas em volta do
+// assunto por design/fotos/gerar-capsulas.py: no tamanho da cápsula, foto desfocada vira borrão.
+// Cada cápsula alterna esporte e saúde clínica, que são os dois lados do que o consultório oferece.
+const pillA = [pillTenis, pillCiclismo, pillHalterofilia, pillVolei];
+const pillB = [pillNatacao, pillConsulta, pillFutebol, pillCorridaSenior];
 
 // faixa de fotos que desliza com a rolagem
 const strip = [imgEsporte, imgDisposicao, imgEmagrecer, imgMassa, movimento, imgEsporte, imgEmagrecer, imgDisposicao];
@@ -103,7 +113,7 @@ const a = site.address;
             <span class="ht-w"><span>Seu</span></span>
             <span class="pill" aria-hidden="true" data-cycle style="--pd: 0.55s">
               {pillA.map((src, i) => (
-                <Image src={src} alt="" widths={[420]} sizes="12rem" quality={55} class:list={{ on: i === 0 }} loading={i === 0 ? 'eager' : 'lazy'} />
+                <Image src={src} alt="" widths={[420]} sizes="12rem" quality={72} class:list={{ on: i === 0 }} loading={i === 0 ? 'eager' : 'lazy'} />
               ))}
             </span>
             <span class="ht-w"><span style="--wd: 0.08s">melhor</span></span>
@@ -112,7 +122,7 @@ const a = site.address;
             <span class="ht-w"><span style="--wd: 0.16s">está por</span></span>
             <span class="pill" aria-hidden="true" data-cycle style="--pd: 0.75s">
               {pillB.map((src, i) => (
-                <Image src={src} alt="" widths={[420]} sizes="12rem" quality={55} class:list={{ on: i === 0 }} loading={i === 0 ? 'eager' : 'lazy'} />
+                <Image src={src} alt="" widths={[420]} sizes="12rem" quality={72} class:list={{ on: i === 0 }} loading={i === 0 ? 'eager' : 'lazy'} />
               ))}
             </span>
             <span class="ht-w"><span style="--wd: 0.24s">vir.</span></span>
@@ -172,7 +182,11 @@ const a = site.address;
 
           <blockquote class="doctor-story">
             <p class="doctor-lead" data-scrub>
-              “Eu já fui gordinho e também já fui muito magro. Cresci inseguro com o meu corpo e, aos 16 anos, comecei a
+              “Meu maior orgulho não é o corpo que alcancei. É ajudar cada paciente a perceber que, com saúde, estratégia
+              e direção, aquilo que hoje parece distante pode se tornar possível.
+            </p>
+            <p class="doctor-origin" data-reveal>
+              Eu já fui gordinho e também já fui muito magro. Cresci inseguro com o meu corpo e, aos 16 anos, comecei a
               treinar e a cuidar da alimentação.
             </p>
             <p data-reveal>
@@ -181,11 +195,7 @@ const a = site.address;
             </p>
             <p data-reveal>
               Esse interesse me levou à Medicina. Hoje, uso conhecimento médico, experiência prática e acompanhamento
-              individualizado para ajudar outras pessoas a construírem mudanças possíveis, saudáveis e duradouras.
-            </p>
-            <p class="doctor-close" data-reveal>
-              Meu maior orgulho não é o corpo que alcancei. É ajudar cada paciente a perceber que, com saúde, estratégia e
-              direção, aquilo que hoje parece distante pode se tornar possível.”
+              individualizado para ajudar outras pessoas a construírem mudanças possíveis, saudáveis e duradouras.”
             </p>
           </blockquote>
           <div data-reveal>
@@ -568,8 +578,8 @@ const a = site.address;
   .pill {
     position: relative;
     display: inline-block;
-    width: 1.8em;
-    height: 0.74em;
+    width: 1.6em;
+    height: 0.84em;
     border-radius: 999px;
     overflow: hidden;
     background: var(--navy);
@@ -614,7 +624,7 @@ const a = site.address;
   }
   @keyframes pill-open {
     from { width: 0; opacity: 0; }
-    to { width: 1.8em; opacity: 1; }
+    to { width: 1.6em; opacity: 1; }
   }
   @keyframes fade-up {
     from { opacity: 0; transform: translateY(18px); }
@@ -716,9 +726,12 @@ const a = site.address;
   .doctor-lead :global(.sw.lit) {
     opacity: 1;
   }
-  .doctor-close {
+  /* segundo parágrafo: ainda em evidência, mas bem abaixo da frase de abertura */
+  .doctor-origin {
+    font-size: clamp(1.15rem, 1rem + 0.45vw, 1.4rem);
+    font-weight: 500;
+    line-height: 1.5;
     color: var(--on-mist);
-    font-weight: 600;
   }
   .btn-navy {
     background: var(--on-mist);
@@ -1257,9 +1270,7 @@ const a = site.address;
     .ht-row {
       row-gap: 0.06em;
     }
-    .pill {
-      height: 0.8em;
-    }
+
     .hero-actions {
       flex-direction: column;
       width: 100%;
