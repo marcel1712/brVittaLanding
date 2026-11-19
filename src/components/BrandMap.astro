@@ -120,6 +120,8 @@ const height = b.floors * b.floorHeight;
       bearing: reduce ? -18 : 0,
       attributionControl: { compact: true },
       cooperativeGestures: true,
+      // sem navegação por teclado no canvas: quem usa teclado tem os botões do Google Maps e do Waze
+      keyboard: false,
       locale: {
         'CooperativeGesturesHandler.WindowsHelpText': 'Use Ctrl + rolagem para dar zoom no mapa',
         'CooperativeGesturesHandler.MacHelpText': 'Use ⌘ + rolagem para dar zoom no mapa',
@@ -127,6 +129,10 @@ const height = b.floors * b.floorHeight;
       },
     });
     map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'bottom-right');
+    // o MapLibre põe tabindex="0" no <canvas>, que não é um elemento interativo
+    const canvas = map.getCanvas();
+    canvas.removeAttribute('tabindex');
+    canvas.setAttribute('aria-label', 'Mapa da localização do consultório');
 
     map.on('style.load', () => {
       const set = (id: string, prop: string, value: unknown) => {

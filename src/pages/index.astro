@@ -159,7 +159,8 @@ const a = site.address;
     <div class="strip" data-strip aria-hidden="true">
       <div class="strip-track" data-strip-track>
         {strip.map((src, i) => (
-          // as fotos visíveis na primeira tela são o LCP: carregam já e com prioridade
+          // a faixa toda está na primeira dobra (as últimas só fora da tela na horizontal):
+          // tudo eager, mas só as duas primeiras (LCP) com prioridade alta e o resto com baixa
           <Image
             src={src}
             alt=""
@@ -167,8 +168,8 @@ const a = site.address;
             sizes="(min-width: 760px) 30vw, 75vw"
             quality={55}
             class="strip-img"
-            loading={i < 3 ? 'eager' : 'lazy'}
-            fetchpriority={i < 2 ? 'high' : 'auto'}
+            loading="eager"
+            fetchpriority={i < 2 ? 'high' : i < 3 ? 'auto' : 'low'}
             decoding={i < 2 ? 'sync' : 'async'}
           />
         ))}

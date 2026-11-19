@@ -104,10 +104,12 @@ const jsonLd = {
 };
 
 const { googleTagId, metaPixelId } = site.analytics;
+// No dev, .cv-off desliga o content-visibility: o audit da barra do Astro lê innerText, que fica
+// vazio nas seções ainda não renderizadas, e acusava falsos "Missing content" em títulos e links.
 ---
 
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" class:list={[{ 'cv-off': import.meta.env.DEV }]}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
