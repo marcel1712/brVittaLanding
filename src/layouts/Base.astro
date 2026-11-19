@@ -3,16 +3,25 @@ import '@fontsource-variable/anek-latin/standard.css';
 import '@fontsource-variable/raleway';
 import '../styles/global.css';
 import anekLatin from '@fontsource-variable/anek-latin/files/anek-latin-latin-standard-normal.woff2?url';
+import { getImage } from 'astro:assets';
 import { site, faqs } from '../config/site';
+import drBruno from '../assets/dr-bruno.webp';
 
 interface Props {
   title: string;
   description: string;
   path?: string;
+  /** páginas que não devem aparecer no Google (ex.: 404) */
+  noindex?: boolean;
+  /** inclui o FAQ nos dados estruturados (só na página que exibe o FAQ) */
+  faq?: boolean;
 }
-const { title, description, path = '/' } = Astro.props;
+const { title, description, path = '/', noindex = false, faq = false } = Astro.props;
 const canonical = new URL(path, site.url).toString();
 const ogImage = new URL('/og-image.jpg', site.url).toString();
+const ogImageAlt = 'Seu melhor está por vir. Dr. Bruno Ricardo, saúde, emagrecimento e performance em Santo André.';
+// foto do médico para os dados estruturados (JPG, aceito por qualquer leitor)
+const doctorPhoto = new URL((await getImage({ src: drBruno, width: 720, format: 'jpg' })).src, site.url).toString();
 
 const clinicId = `${site.url}/#clinica`;
 const doctorId = `${site.url}/#medico`;
@@ -60,7 +69,12 @@ const jsonLd = {
       '@id': doctorId,
       name: site.doctor.name,
       url: `${site.url}/#medico`,
-      image: new URL('/og-image.jpg', site.url).toString(),
+      image: doctorPhoto,
+      description:
+        'Médico formado pela Universidade Municipal de São Caetano do Sul, com atendimento individualizado em saúde, emagrecimento e performance em Santo André.',
+      knowsAbout: ['Emagrecimento', 'Composição corporal', 'Bioimpedância', 'Performance física', 'Qualidade de vida'],
+      ...(site.whatsapp.number ? { telephone: `+${site.whatsapp.number}` } : {}),
+      sameAs: [site.instagram].filter(Boolean),
       worksFor: { '@id': clinicId },
       address: { '@type': 'PostalAddress', addressLocality: site.address.city, addressRegion: site.address.state, addressCountry: 'BR' },
       alumniOf: { '@type': 'CollegeOrUniversity', name: 'Universidade Municipal de São Caetano do Sul' },
@@ -74,14 +88,18 @@ const jsonLd = {
       inLanguage: 'pt-BR',
       publisher: { '@id': clinicId },
     },
-    {
-      '@type': 'FAQPage',
-      mainEntity: faqs.map((f) => ({
-        '@type': 'Question',
-        name: f.q,
-        acceptedAnswer: { '@type': 'Answer', text: f.a },
-      })),
-    },
+    ...(faq
+      ? [
+          {
+            '@type': 'FAQPage',
+            mainEntity: faqs.map((f) => ({
+              '@type': 'Question',
+              name: f.q,
+              acceptedAnswer: { '@type': 'Answer', text: f.a },
+            })),
+          },
+        ]
+      : []),
   ],
 };
 
@@ -93,11 +111,23 @@ const { googleTagId, metaPixelId } = site.analytics;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline>
+      // .js liga as animações; .cv-off desliga a renderização sob demanda (content-visibility)
+      // quando a página abre direto numa seção ou quando alguém clica num link de seção,
+      // para o salto cair no lugar certo.
+      (function (d) {
+        d.classList.add('js');
+        if (location.hash) d.classList.add('cv-off');
+        document.addEventListener('click', function (e) {
+          var a = e.target.closest && e.target.closest('a[href^="#"], a[href^="/#"]');
+          if (a) d.classList.add('cv-off');
+        }, true);
+      })(document.documentElement);
+    </script>
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
     <meta name="theme-color" content="#000000" />
     <meta name="color-scheme" content="dark" />
 
@@ -116,6 +146,7 @@ const { googleTagId, metaPixelId } = site.analytics;
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
 
     <meta name="geo.region" content="BR-SP" />

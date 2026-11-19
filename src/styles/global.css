@@ -146,6 +146,17 @@ p {
   max-width: 40ch;
 }
 
+.link {
+  color: var(--white);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 0.25em;
+  text-decoration-thickness: 1px;
+}
+.link:hover {
+  color: var(--gold);
+}
+
 /* ───────── Botões ───────── */
 .btn {
   --h: 3.25rem;

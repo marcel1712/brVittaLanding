@@ -1,0 +1,125 @@
+---
+/**
+ * Barra superior sólida. Na home os links são âncoras da própria página; nas outras páginas
+ * (404, política de privacidade) apontam para as seções da home.
+ */
+import { Image } from 'astro:assets';
+import { whatsappLink } from '../config/site';
+import monograma from '../assets/monograma.png';
+
+interface Props {
+  home?: boolean;
+}
+const { home = false } = Astro.props;
+const base = home ? '' : '/';
+const links = [
+  ['#medico', 'O médico'],
+  ['#objetivos', 'Objetivos'],
+  ['#consulta', 'A consulta'],
+  ['#localizacao', 'Onde estamos'],
+  ['#duvidas', 'Dúvidas'],
+];
+---
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a href="/" class="brand" aria-label="BrVitta — Vitta Performance, início">
+      <Image src={monograma} alt="" width={30} height={32} densities={[1, 2]} loading="eager" />
+      <span>Vitta Performance</span>
+    </a>
+    <nav aria-label="Seções">
+      {links.map(([href, label]) => <a href={`${base}${href}`}>{label}</a>)}
+    </nav>
+    <a class="btn btn-gold topbar-cta" href={whatsappLink()} data-origem="topo" target="_blank" rel="noopener">
+      Agendar<span class="sr-only"> consulta (abre o WhatsApp)</span>
+    </a>
+  </div>
+</header>
+
+<style>
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--black);
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  }
+  .topbar-in {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: 4.5rem;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-right: auto;
+    text-decoration: none;
+  }
+  .brand img {
+    width: 26px;
+    height: auto;
+  }
+  .brand span {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+  nav {
+    display: flex;
+    gap: 1.75rem;
+  }
+  nav a {
+    position: relative;
+    font-size: 0.9375rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.35rem;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.45s var(--ease);
+  }
+  nav a:hover {
+    color: var(--white);
+  }
+  nav a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  .topbar-cta {
+    --h: 2.6rem;
+    padding: 0 1.5rem;
+    font-size: 0.9375rem;
+  }
+
+  @media (max-width: 1080px) {
+    nav {
+      display: none;
+    }
+  }
+  @media (max-width: 760px) {
+    .topbar-in {
+      height: 4rem;
+    }
+    .brand span {
+      font-size: 0.66rem;
+      letter-spacing: 0.24em;
+    }
+    .topbar-cta {
+      --h: 2.4rem;
+      padding: 0 1.15rem;
+    }
+  }
+</style>

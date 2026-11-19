@@ -1,7 +1,9 @@
 ---
-import { Picture, Image } from 'astro:assets';
+import { Picture, Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import BrandMap from '../components/BrandMap.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 import { site, faqs, whatsappLink } from '../config/site';
 
 import drBruno from '../assets/dr-bruno.webp';
@@ -19,8 +21,6 @@ import imgEmagrecer from '../assets/obj-emagrecer.jpg';
 import imgMassa from '../assets/obj-massa.jpg';
 import imgEsporte from '../assets/obj-esporte.jpg';
 import imgDisposicao from '../assets/obj-disposicao.jpg';
-import monograma from '../assets/monograma.png';
-import logoCompleto from '../assets/logo-completo.png';
 
 // Título ≤ 60 caracteres e descrição ≤ 155, para não serem cortados no resultado do Google
 const title = 'Dr. Bruno Ricardo | Emagrecimento e Saúde em Santo André';
@@ -60,7 +60,7 @@ const goals = [
 
 const facts = [
   { t: '50 a 60 minutos', d: 'Tempo para conversar, avaliar e esclarecer suas dúvidas sem pressa.' },
-  { t: 'Avaliação corporal', d: 'Análise da composição corporal pelo InBody, incluindo gordura, massa muscular e água corporal.' },
+  { t: 'Avaliação corporal', d: 'Análise da composição corporal por bioimpedância (InBody), incluindo gordura, massa muscular e água corporal.' },
   { t: 'Exames', d: 'Leitura e interpretação dos exames laboratoriais apresentados durante a consulta.' },
   { t: 'Direção', d: 'Orientações individualizadas sobre treino, alimentação, suplementação e estilo de vida, conforme suas necessidades.' },
 ];
@@ -77,6 +77,14 @@ const steps = [
 const pillA = [pillTenis, pillCiclismo, pillHalterofilia, pillVolei];
 const pillB = [pillNatacao, pillConsulta, pillFutebol, pillCorridaSenior];
 
+// A 1ª foto de cada cápsula carrega já; as demais só depois do evento "load" (via data-src),
+// para não disputarem banda e processamento com a primeira tela no celular.
+const pillSizes = '(min-width: 760px) 11rem, 24vw';
+const toPill = (src: ImageMetadata) =>
+  getImage({ src, width: 420, widths: [200, 420], sizes: pillSizes, quality: 72, format: 'webp' });
+const pillsA = await Promise.all(pillA.map(toPill));
+const pillsB = await Promise.all(pillB.map(toPill));
+
 // faixa de fotos que desliza com a rolagem
 const strip = [imgEsporte, imgDisposicao, imgEmagrecer, imgMassa, movimento, imgEsporte, imgEmagrecer, imgDisposicao];
 
@@ -84,25 +92,8 @@ const agendar = whatsappLink();
 const a = site.address;
 ---
 
-<Base title={title} description={description}>
-  <header class="topbar">
-    <div class="wrap topbar-in">
-      <a href="/" class="brand" aria-label="BrVitta — Vitta Performance, início">
-        <Image src={monograma} alt="" width={30} height={32} loading="eager" />
-        <span>Vitta Performance</span>
-      </a>
-      <nav aria-label="Seções">
-        <a href="#medico">O médico</a>
-        <a href="#objetivos">Objetivos</a>
-        <a href="#consulta">A consulta</a>
-        <a href="#localizacao">Onde estamos</a>
-        <a href="#duvidas">Dúvidas</a>
-      </nav>
-      <a class="btn btn-gold topbar-cta" href={agendar} data-origem="topo" target="_blank" rel="noopener">
-        Agendar<span class="sr-only"> consulta (abre o WhatsApp)</span>
-      </a>
-    </div>
-  </header>
+<Base title={title} description={description} faq>
+  <SiteHeader home />
 
   <main id="conteudo">
     <!-- ───────── Hero: título com cápsulas de foto ───────── -->
@@ -112,8 +103,20 @@ const a = site.address;
           <span class="ht-row">
             <span class="ht-w"><span>Seu</span></span>
             <span class="pill" aria-hidden="true" data-cycle style="--pd: 0.55s">
-              {pillA.map((src, i) => (
-                <Image src={src} alt="" widths={[420]} sizes="12rem" quality={72} class:list={{ on: i === 0 }} loading={i === 0 ? 'eager' : 'lazy'} />
+              {pillsA.map((img, i) => (
+                <img
+                  src={i === 0 ? img.src : undefined}
+                  srcset={i === 0 ? img.srcSet.attribute : undefined}
+                  data-src={i === 0 ? undefined : img.src}
+                  data-srcset={i === 0 ? undefined : img.srcSet.attribute}
+                  sizes={pillSizes}
+                  width={img.attributes.width}
+                  height={img.attributes.height}
+                  alt=""
+                  decoding="async"
+                  fetchpriority={i === 0 ? 'high' : undefined}
+                  class:list={{ on: i === 0 }}
+                />
               ))}
             </span>
             <span class="ht-w"><span style="--wd: 0.08s">melhor</span></span>
@@ -121,8 +124,20 @@ const a = site.address;
           <span class="ht-row ht-gold">
             <span class="ht-w"><span style="--wd: 0.16s">está por</span></span>
             <span class="pill" aria-hidden="true" data-cycle style="--pd: 0.75s">
-              {pillB.map((src, i) => (
-                <Image src={src} alt="" widths={[420]} sizes="12rem" quality={72} class:list={{ on: i === 0 }} loading={i === 0 ? 'eager' : 'lazy'} />
+              {pillsB.map((img, i) => (
+                <img
+                  src={i === 0 ? img.src : undefined}
+                  srcset={i === 0 ? img.srcSet.attribute : undefined}
+                  data-src={i === 0 ? undefined : img.src}
+                  data-srcset={i === 0 ? undefined : img.srcSet.attribute}
+                  sizes={pillSizes}
+                  width={img.attributes.width}
+                  height={img.attributes.height}
+                  alt=""
+                  decoding="async"
+                  fetchpriority={i === 0 ? 'high' : undefined}
+                  class:list={{ on: i === 0 }}
+                />
               ))}
             </span>
             <span class="ht-w"><span style="--wd: 0.24s">vir.</span></span>
@@ -148,12 +163,13 @@ const a = site.address;
           <Image
             src={src}
             alt=""
-            widths={[360, 640]}
-            sizes="(min-width: 760px) 30vw, 60vw"
+            widths={[280, 420, 560]}
+            sizes="(min-width: 760px) 30vw, 75vw"
             quality={55}
             class="strip-img"
             loading={i < 3 ? 'eager' : 'lazy'}
             fetchpriority={i < 2 ? 'high' : 'auto'}
+            decoding={i < 2 ? 'sync' : 'async'}
           />
         ))}
       </div>
@@ -168,7 +184,7 @@ const a = site.address;
             formats={['avif', 'webp']}
             fallbackFormat="jpg"
             widths={[420, 720]}
-            sizes="(min-width: 900px) 36vw, 90vw"
+            sizes="(min-width: 900px) 36vw, min(90vw, 420px)"
             alt="Dr. Bruno Ricardo, de jaleco e estetoscópio, sorrindo"
           />
         </figure>
@@ -244,7 +260,7 @@ const a = site.address;
               src={g.img}
               formats={['avif', 'webp']}
               fallbackFormat="jpg"
-              widths={[480, 900]}
+              widths={[480, 720, 900]}
               sizes="(min-width: 900px) 55vw, 100vw"
               alt={g.alt}
               class:list={['goal-img', { on: i === 0 }]}
@@ -264,7 +280,7 @@ const a = site.address;
             src={consultorio}
             formats={['avif', 'webp']}
             fallbackFormat="jpg"
-            widths={[480, 941]}
+            widths={[480, 720, 941]}
             sizes="(min-width: 900px) 40vw, 100vw"
             alt="Consultório da BrVitta em Santo André, com mesa de atendimento e balança de bioimpedância InBody"
           />
@@ -318,6 +334,10 @@ const a = site.address;
           <span>CEP {a.postalCode}</span>
         </address>
         <p class="where-hours" data-reveal style="--d: 350">{site.openingHoursLabel}</p>
+        <p class="where-region" data-reveal style="--d: 400">
+          Atendimento presencial para pacientes de Santo André e de todo o ABC, como São Bernardo do Campo, São
+          Caetano do Sul e Mauá.
+        </p>
         <div class="where-actions" data-reveal style="--d: 450">
           <a class="btn btn-ghost" href={site.mapsUrl} target="_blank" rel="noopener">Abrir no Google Maps</a>
           <a class="btn btn-ghost" href={site.wazeUrl} target="_blank" rel="noopener">Abrir no Waze</a>
@@ -365,34 +385,41 @@ const a = site.address;
     </section>
   </main>
 
-  <footer class="site-foot">
-    <div class="wrap foot-in">
-      <Image src={logoCompleto} alt="Vitta Performance" width={200} height={67} class="foot-logo" />
-      <div class="foot-legal">
-        <p>Responsável técnico: {site.doctor.name} · {site.doctor.crm}</p>
-        <p>{a.building} · {a.street} · {a.city} – {a.state}</p>
-        {site.instagram && <p><a href={site.instagram} class="link" rel="noopener" target="_blank">Instagram</a></p>}
-        <p>©{new Date().getFullYear()} Vitta Performance.</p>
-      </div>
-    </div>
-  </footer>
+  <SiteFooter />
 
   <script>
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // ── Cápsulas do título: alternam as fotos ──
-    if (!reduce) {
+    // ── Cápsulas do título: depois que a página carrega, baixa as outras fotos e passa a alterná-las ──
+    const startPills = () => {
       document.querySelectorAll<HTMLElement>('[data-cycle]').forEach((pill, n) => {
-        const imgs = [...pill.querySelectorAll('img')];
+        const imgs = [...pill.querySelectorAll<HTMLImageElement>('img')];
+        imgs.forEach((img) => {
+          if (img.dataset.src) {
+            img.srcset = img.dataset.srcset ?? '';
+            img.src = img.dataset.src;
+          }
+        });
         let i = 0;
         setTimeout(() => {
           setInterval(() => {
+            const next = (i + 1) % imgs.length;
+            if (!imgs[next].complete) return; // ainda baixando: tenta na próxima volta
             imgs[i].classList.remove('on');
-            i = (i + 1) % imgs.length;
-            imgs[i].classList.add('on');
+            imgs[next].classList.add('on');
+            i = next;
           }, 2600);
-        }, 1800 + n * 1300);
+        }, 1200 + n * 1300);
       });
+    };
+    // espera o navegador ficar ocioso depois do "load", para não disputar a pintura da primeira tela
+    const whenIdle = () =>
+      'requestIdleCallback' in window
+        ? requestIdleCallback(startPills, { timeout: 2500 })
+        : setTimeout(startPills, 1200);
+    if (!reduce) {
+      if (document.readyState === 'complete') whenIdle();
+      else addEventListener('load', whenIdle, { once: true });
     }
 
     // ── Objetivos: item ativo troca a foto; avança sozinho até alguém interagir ──
@@ -444,6 +471,9 @@ const a = site.address;
         }
       }
       for (const { el, words } of scrubs) {
+        // só mede quando a seção está perto da tela (evita forçar a montagem de seções fora dela)
+        const sec = el.closest('section')!.getBoundingClientRect();
+        if (sec.top > vh * 1.5 || sec.bottom < -vh) continue;
         const r = el.getBoundingClientRect();
         const p = reduce ? 1 : clamp((vh * 0.85 - r.top) / (r.height + vh * 0.35));
         const lit = Math.round(p * words.length);
@@ -460,74 +490,6 @@ const a = site.address;
 </Base>
 
 <style>
-  /* ───────── Topo (barra sólida) ───────── */
-  .topbar {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: var(--black);
-    border-bottom: 1px solid rgb(255 255 255 / 0.08);
-  }
-  .topbar-in {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    height: 4.5rem;
-  }
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-right: auto;
-    text-decoration: none;
-  }
-  .brand img {
-    width: 26px;
-    height: auto;
-  }
-  .brand span {
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--white);
-  }
-  nav {
-    display: flex;
-    gap: 1.75rem;
-  }
-  nav a {
-    position: relative;
-    font-size: 0.9375rem;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  nav a::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -0.35rem;
-    height: 1px;
-    background: var(--gold);
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.45s var(--ease);
-  }
-  nav a:hover {
-    color: var(--white);
-  }
-  nav a:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
-  }
-  .topbar-cta {
-    --h: 2.6rem;
-    padding: 0 1.5rem;
-    font-size: 0.9375rem;
-  }
-
   /* ───────── Hero ───────── */
   .hero {
     position: relative;
@@ -623,8 +585,8 @@ const a = site.address;
     to { transform: none; }
   }
   @keyframes pill-open {
-    from { width: 0; opacity: 0; }
-    to { width: 1.6em; opacity: 1; }
+    from { clip-path: inset(0 50% round 999px); opacity: 0; }
+    to { clip-path: inset(0 0 round 999px); opacity: 1; }
   }
   @keyframes fade-up {
     from { opacity: 0; transform: translateY(18px); }
@@ -1166,49 +1128,35 @@ const a = site.address;
     font-size: var(--fs-md);
     color: #d5dae4;
   }
-  .link {
-    color: var(--white);
-    text-decoration: underline;
-    text-decoration-color: var(--gold);
-    text-underline-offset: 0.25em;
-    text-decoration-thickness: 1px;
-  }
-  .link:hover {
-    color: var(--gold);
+  .where-region {
+    margin-top: 1rem;
+    max-width: 40ch;
+    color: var(--muted);
   }
 
-  /* ───────── Rodapé ───────── */
-  .site-foot {
-    padding-block: 3rem;
-    background: var(--black);
-    border-top: 1px solid rgb(255 255 255 / 0.08);
+  /* ───────── Performance: o navegador só monta cada seção quando ela chega perto da tela ─────────
+     `auto` no tamanho guarda a altura real depois da primeira renderização. */
+  .doctor,
+  .goals,
+  .consult,
+  .steps,
+  .where,
+  .faq,
+  .closing {
+    content-visibility: auto;
   }
-  .foot-in {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2rem;
-  }
-  .foot-logo {
-    width: 170px;
-    height: auto;
-  }
-  .foot-legal {
-    font-size: var(--fs-sm);
-    color: var(--muted);
-    text-align: right;
-    display: grid;
-    gap: 0.25rem;
+  .doctor { contain-intrinsic-size: auto 1500px; }
+  .goals { contain-intrinsic-size: auto 1100px; }
+  .consult { contain-intrinsic-size: auto 1000px; }
+  .steps { contain-intrinsic-size: auto 800px; }
+  .where { contain-intrinsic-size: auto 760px; }
+  .faq { contain-intrinsic-size: auto 1000px; }
+  .closing { contain-intrinsic-size: auto 700px; }
+  :global(.cv-off) :is(.doctor, .goals, .consult, .steps, .where, .faq, .closing) {
+    content-visibility: visible;
   }
 
   /* ───────── Responsivo ───────── */
-  @media (max-width: 1080px) {
-    nav {
-      display: none;
-    }
-  }
-
   @media (max-width: 900px) {
     .goals,
     .where {
@@ -1248,17 +1196,6 @@ const a = site.address;
   }
 
   @media (max-width: 760px) {
-    .topbar-in {
-      height: 4rem;
-    }
-    .brand span {
-      font-size: 0.66rem;
-      letter-spacing: 0.24em;
-    }
-    .topbar-cta {
-      --h: 2.4rem;
-      padding: 0 1.15rem;
-    }
     .hero-in {
       min-height: 0;
       padding-block: 4.5rem 6rem;
@@ -1280,9 +1217,6 @@ const a = site.address;
     }
     .facts div {
       grid-template-columns: minmax(0, 1fr);
-    }
-    .foot-legal {
-      text-align: left;
     }
   }
 </style>

@@ -91,12 +91,24 @@ export const faqs = [
     a: 'São de 50 a 60 minutos para conversar sobre histórico, rotina, treino, sono e objetivos, fazer o exame físico e a avaliação de composição corporal, ler seus exames e definir juntos as prioridades.',
   },
   {
+    q: 'O que é a avaliação por bioimpedância (InBody)?',
+    a: 'É um exame rápido e sem dor, feito em pé sobre a balança InBody, que estima a gordura corporal, a massa muscular e a água do corpo. Ele ajuda a acompanhar a sua evolução com dados, e não só pelo peso da balança comum.',
+  },
+  {
+    q: 'A consulta é indicada para quem quer perder gordura ou ganhar massa muscular?',
+    a: 'Sim. A avaliação considera seus exames, sua rotina e sua composição corporal para definir um plano de alimentação, treino, suplementação e estilo de vida voltado à perda de gordura, ao ganho de massa muscular ou aos dois, com acompanhamento ao longo do processo.',
+  },
+  {
     q: 'O atendimento é presencial ou online?',
     a: 'A consulta é presencial, no consultório em Santo André. Entre as consultas, o acompanhamento e o suporte para dúvidas acontecem pelo WhatsApp.',
   },
   {
     q: 'Onde fica o consultório?',
     a: 'No Edifício Works, na Av. Dom Pedro II, 1641, no Campestre, em Santo André. As orientações de chegada são enviadas na confirmação do agendamento.',
+  },
+  {
+    q: 'Atende pacientes de outras cidades do ABC?',
+    a: 'Sim. Recebemos pacientes de Santo André e de todo o ABC, como São Bernardo do Campo, São Caetano do Sul e Mauá, no consultório do Edifício Works, na Av. Dom Pedro II, 1641.',
   },
   {
     q: 'Quanto custa a consulta?',
