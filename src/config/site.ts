@@ -23,24 +23,44 @@ export const site = {
     // TODO: número com DDI + DDD, só dígitos. Ex.: 5511999999999
     number: '5511900000000',
     defaultMessage:
-      'Olá! Vim pelo site da Vitta Performance e gostaria de agendar uma consulta com o Dr. Bruno.',
+      'Olá! Vim pelo site da BrVitta e gostaria de agendar uma consulta com o Dr. Bruno.',
   },
 
-  // TODO: endereço completo exatamente igual ao do Perfil da Empresa no Google (NAP consistente)
+  // Manter idêntico ao Perfil da Empresa no Google (NAP consistente)
   address: {
-    street: 'Rua Exemplo, 000 — Sala 00',
-    neighborhood: 'Centro',
+    building: 'Edifício Works',
+    street: 'Av. Dom Pedro II, 1641',
+    // TODO: número da sala, se quiser exibir (ex.: 'Sala 52')
+    unit: '',
+    neighborhood: 'Campestre',
     city: 'Santo André',
     state: 'SP',
-    postalCode: '09000-000',
+    postalCode: '09080-111',
     country: 'BR',
-    // TODO: coordenadas do consultório (clique com o botão direito no Google Maps > copiar)
-    lat: -23.6639,
-    lng: -46.5383,
+    // TODO: confirmar o pino exato (Google Maps > botão direito no prédio > copiar coordenadas).
+    // Valor atual = interpolação do nº 1641 entre endereços do OpenStreetMap na mesma avenida
+    // (nº 1313 e nº 1961, lado ímpar); o prédio em si não existe no OpenStreetMap.
+    lat: -23.6423,
+    lng: -46.5403,
   },
 
-  // TODO: link do Perfil da Empresa no Google Maps (ex.: https://maps.app.goo.gl/...)
-  mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Vitta+Performance+Santo+Andr%C3%A9',
+  // Edifício Works desenhado em 3D (dourado) no mapa, porque a base do OpenStreetMap não tem o prédio.
+  building3d: {
+    // TODO: confirmar o número de andares
+    floors: 15,
+    floorHeight: 3.3, // metros por andar
+    // base retangular centrada no pino, alinhada à avenida (metros; graus a partir do norte)
+    width: 22,
+    depth: 30,
+    bearing: -28,
+    // opcional: contorno exato do prédio [[lng, lat], ...]; quando preenchido, substitui o retângulo
+    footprint: null as null | [number, number][],
+  },
+
+  // TODO: trocar pelo link do Perfil da Empresa no Google Maps quando existir (ex.: https://maps.app.goo.gl/...)
+  mapsUrl:
+    'https://www.google.com/maps/search/?api=1&query=Edif%C3%ADcio+Works+Av.+Dom+Pedro+II+1641+Campestre+Santo+Andr%C3%A9+SP',
+  wazeUrl: 'https://waze.com/ul?q=Av.%20Dom%20Pedro%20II%2C%201641%2C%20Santo%20Andr%C3%A9&navigate=yes',
 
   // TODO: confirmar horários de atendimento
   openingHours: [
@@ -69,15 +89,15 @@ export const faqs = [
   },
   {
     q: 'Como funciona a primeira consulta?',
-    a: 'Você responde uma anamnese antes do encontro. Na consulta, de 50 a 60 minutos, conversamos sobre histórico, rotina, treino, sono e objetivos, fazemos exame físico e avaliação de composição corporal e definimos juntos o plano.',
+    a: 'São de 50 a 60 minutos para conversar sobre histórico, rotina, treino, sono e objetivos, fazer o exame físico e a avaliação de composição corporal, ler seus exames e definir juntos as prioridades.',
   },
   {
     q: 'O atendimento é presencial ou online?',
-    a: 'A primeira consulta é presencial, no consultório em Santo André. Os retornos podem ser presenciais ou por teleconsulta, conforme o acompanhamento combinado.',
+    a: 'A consulta é presencial, no consultório em Santo André. Entre as consultas, o acompanhamento e o suporte para dúvidas acontecem pelo WhatsApp.',
   },
   {
     q: 'Onde fica o consultório?',
-    a: 'Em Santo André, SP. O endereço completo e as orientações de chegada são enviados na confirmação do agendamento.',
+    a: 'No Edifício Works, na Av. Dom Pedro II, 1641, no Campestre, em Santo André. As orientações de chegada são enviadas na confirmação do agendamento.',
   },
   {
     q: 'Quanto custa a consulta?',
@@ -85,7 +105,7 @@ export const faqs = [
   },
   {
     q: 'Atende convênio?',
-    a: 'O atendimento é particular. Emitimos recibo e relatório para você solicitar reembolso ao seu convênio, quando o seu convênio prevê essa possibilidade.',
+    a: 'O atendimento é particular. Emitimos recibo e relatório para você solicitar reembolso, quando o seu convênio prevê essa possibilidade.',
   },
   {
     q: 'Como faço para agendar?',

@@ -3,30 +3,32 @@
   --black: #000;
   --ink: #0c1220;
   --navy: #131f35;
-  --inset: #1a2338;
   --line: #232f4a;
   --gold: #f0ce80;
-  --gold-deep: #e8c874;
   --white: #fff;
   --text: #e9ecf2;
   --muted: #9aa3b5;
 
+  /* painel claro (seções "papel") */
+  --mist: #e8ebf0;
+  --mist-line: #c9cfd9;
+  --on-mist: #131f35;
+  --on-mist-muted: #4f5a70;
+
   --display: 'Anek Latin Variable', 'Arial Narrow', sans-serif;
   --body: 'Raleway Variable', system-ui, sans-serif;
 
-  /* escala modular 1.25 */
   --fs-sm: 0.875rem;
   --fs-base: 1.0625rem;
   --fs-md: 1.25rem;
   --fs-lg: 1.5625rem;
   --fs-xl: clamp(1.9rem, 1.2rem + 2.6vw, 2.75rem);
-  --fs-2xl: clamp(2.4rem, 1.4rem + 4vw, 4.2rem);
+  --fs-2xl: clamp(2.4rem, 1.3rem + 4.2vw, 4.4rem);
 
   --gutter: clamp(1rem, 0.4rem + 3vw, 3rem);
-  --max: 1240px;
+  --max: 1280px;
   --radius-pill: 999px;
-  --radius: 22px;
-  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 *,
@@ -37,7 +39,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 5.5rem;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -51,7 +53,7 @@ body {
   font-variant-numeric: lining-nums;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 img {
@@ -103,6 +105,18 @@ p {
   color: var(--black);
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .skip {
   position: absolute;
   left: 1rem;
@@ -129,7 +143,7 @@ p {
   font-size: var(--fs-md);
   line-height: 1.55;
   color: var(--muted);
-  max-width: 38ch;
+  max-width: 40ch;
 }
 
 /* ───────── Botões ───────── */
@@ -138,25 +152,20 @@ p {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
   min-height: var(--h);
-  padding: 0 1.6rem;
+  padding: 0 2rem;
   border-radius: var(--radius-pill);
   font-family: var(--body);
   font-weight: 700;
   font-size: 1rem;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
   text-decoration: none;
   white-space: nowrap;
   transition:
-    background-color 0.25s var(--ease),
-    color 0.25s var(--ease),
-    transform 0.25s var(--ease);
-}
-.btn svg {
-  width: 1.25em;
-  height: 1.25em;
-  flex: none;
+    background-color 0.3s var(--ease),
+    color 0.3s var(--ease),
+    border-color 0.3s var(--ease),
+    transform 0.3s var(--ease);
 }
 .btn-gold {
   background: var(--gold);
@@ -169,7 +178,7 @@ p {
   transform: scale(0.98);
 }
 .btn-ghost {
-  border: 1px solid rgb(255 255 255 / 0.28);
+  border: 1px solid rgb(255 255 255 / 0.3);
   color: var(--white);
 }
 .btn-ghost:hover {
@@ -178,8 +187,57 @@ p {
 }
 .btn-lg {
   --h: 3.75rem;
-  padding: 0 2rem;
+  padding: 0 2.6rem;
   font-size: 1.0625rem;
+}
+
+/* ───────── Animações de entrada (texto e imagem aparecendo) ─────────
+   Só valem com JS ativo (.js no <html>); sem JS, tudo aparece normalmente. */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 1.1s var(--ease),
+    transform 1.3s var(--ease);
+  transition-delay: calc(var(--d, 0) * 1ms);
+}
+.js [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* títulos: palavra por palavra, subindo por trás de uma máscara */
+.js [data-split] .w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-block: 0.08em 0.14em;
+  margin-block: -0.08em -0.14em;
+}
+.js [data-split] .w > span {
+  display: inline-block;
+  transform: translateY(110%);
+  transition: transform 1.2s var(--ease);
+  transition-delay: calc(var(--i, 0) * 55ms + var(--d, 0) * 1ms);
+}
+.js [data-split].is-in .w > span {
+  transform: none;
+}
+
+/* imagens: abrem de baixo para cima e assentam */
+.js [data-reveal-img] {
+  clip-path: inset(18% 0 0 0);
+  transition: clip-path 1.6s var(--ease);
+}
+.js [data-reveal-img] img {
+  transform: scale(1.12);
+  transition: transform 2.2s var(--ease);
+}
+.js [data-reveal-img].is-in {
+  clip-path: inset(0 0 0 0);
+}
+.js [data-reveal-img].is-in img {
+  transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -192,5 +250,6 @@ p {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
   }
 }

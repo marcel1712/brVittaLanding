@@ -36,7 +36,7 @@ const jsonLd = {
         'Consultório médico em Santo André focado em saúde, emagrecimento, composição corporal e performance física, com acompanhamento individualizado.',
       address: {
         '@type': 'PostalAddress',
-        streetAddress: site.address.street,
+        streetAddress: [site.address.street, site.address.unit, site.address.building].filter(Boolean).join(' – '),
         addressLocality: site.address.city,
         addressRegion: site.address.state,
         postalCode: site.address.postalCode,
@@ -94,6 +94,7 @@ const { googleTagId, metaPixelId } = site.analytics;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -154,6 +155,42 @@ const { googleTagId, metaPixelId } = site.analytics;
   <body>
     <a class="skip" href="#conteudo">Pular para o conteúdo</a>
     <slot />
+
+    <!-- Animações de entrada: divide títulos [data-split] em palavras e revela
+         [data-reveal], [data-split] e [data-reveal-img] quando entram na tela. -->
+    <script is:inline>
+      (function () {
+        document.querySelectorAll('[data-split]').forEach(function (el) {
+          var i = 0;
+          var walk = function (node) {
+            Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+              if (child.nodeType === 3) {
+                var frag = document.createDocumentFragment();
+                child.textContent.split(/(\s+)/).forEach(function (part) {
+                  if (!part) return;
+                  if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+                  var w = document.createElement('span'); w.className = 'w';
+                  var s = document.createElement('span'); s.textContent = part; s.style.setProperty('--i', i++);
+                  w.appendChild(s); frag.appendChild(w);
+                });
+                child.replaceWith(frag);
+              } else if (child.nodeType === 1 && !child.classList.contains('w')) {
+                walk(child);
+              }
+            });
+          };
+          walk(el);
+        });
+        var els = document.querySelectorAll('[data-reveal],[data-split],[data-reveal-img]');
+        if (!('IntersectionObserver' in window)) { els.forEach(function (e) { e.classList.add('is-in'); }); return; }
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+          });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+        els.forEach(function (e) { io.observe(e); });
+      })();
+    </script>
 
     <!-- Conversão: registra cliques no WhatsApp (Google Ads / GA4 / Meta) -->
     <script is:inline>

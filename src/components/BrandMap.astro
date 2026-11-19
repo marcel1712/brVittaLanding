@@ -1,0 +1,362 @@
+---
+/**
+ * Mapa vetorial (MapLibre GL + tiles gratuitos do OpenFreeMap, sem chave de API),
+ * recolorido nas cores da marca, com prédios em 3D e aproximação animada.
+ * A biblioteca (~250 KB gzip) só é baixada quando a seção chega perto da tela.
+ */
+import { site } from '../config/site';
+const { lat, lng } = site.address;
+const b = site.building3d;
+
+// metros -> graus em torno do pino
+const mLat = 1 / 111320;
+const mLng = 1 / (111320 * Math.cos((lat * Math.PI) / 180));
+const offset = (dx: number, dy: number): [number, number] => [lng + dx * mLng, lat + dy * mLat];
+
+// base do prédio: contorno exato, se houver; senão um retângulo alinhado à avenida
+const rot = (b.bearing * Math.PI) / 180;
+const rect = [
+  [-b.width / 2, -b.depth / 2],
+  [b.width / 2, -b.depth / 2],
+  [b.width / 2, b.depth / 2],
+  [-b.width / 2, b.depth / 2],
+].map(([x, y]) => offset(x * Math.cos(rot) + y * Math.sin(rot), -x * Math.sin(rot) + y * Math.cos(rot)));
+const ring = b.footprint ?? rect;
+const closed = [...ring, ring[0]];
+
+// uma laje por andar, com 0,45 m de fresta: desenha as linhas dos pavimentos
+const floors = {
+  type: 'FeatureCollection',
+  features: Array.from({ length: b.floors }, (_, i) => ({
+    type: 'Feature',
+    properties: { floor: i + 1, base: i * b.floorHeight, top: (i + 1) * b.floorHeight - 0.45, last: i === b.floors - 1 },
+    geometry: { type: 'Polygon', coordinates: [closed] },
+  })),
+};
+
+// halo circular no térreo
+const halo = {
+  type: 'Feature',
+  properties: {},
+  geometry: {
+    type: 'Polygon',
+    coordinates: [Array.from({ length: 65 }, (_, i) => {
+      const a = (i / 64) * Math.PI * 2;
+      return offset(Math.cos(a) * 34, Math.sin(a) * 34);
+    })],
+  },
+};
+const height = b.floors * b.floorHeight;
+---
+
+<div
+  class="map-shell"
+  data-map
+  data-lat={lat}
+  data-lng={lng}
+  data-height={height}
+  data-floors={JSON.stringify(floors)}
+  data-halo={JSON.stringify(halo)}
+  role="region"
+  aria-label="Mapa com a localização do consultório no Edifício Works"
+>
+  <div class="map-canvas" data-map-canvas></div>
+  <div class="map-placeholder" aria-hidden="true">
+    <span class="pin-static"></span>
+  </div>
+</div>
+
+<script>
+  // CSS como URL: o Vite emite o arquivo e só o carregamos junto com o mapa
+  // (import dinâmico de CSS não funciona com inlineStylesheets: 'always').
+  import mapCssUrl from 'maplibre-gl/dist/maplibre-gl.css?url';
+  // o worker do MapLibre 6 é autocontido; depois do bundle ele precisa da URL explícita
+  import mapWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
+
+  const shell = document.querySelector<HTMLElement>('[data-map]');
+
+  const loadCss = (href: string) =>
+    new Promise<void>((resolve, reject) => {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      link.onload = () => resolve();
+      link.onerror = () => reject(new Error('CSS do mapa não carregou'));
+      document.head.appendChild(link);
+    });
+
+  const BRAND = {
+    bg: '#0a0f1a',
+    land: '#0d1422',
+    park: '#0f1b24',
+    water: '#16233d',
+    building: '#1b2540',
+    minor: '#1a2439',
+    major: '#283553',
+    motorway: '#36446a',
+    label: '#8d97ab',
+    labelMuted: '#5b6884',
+    halo: '#0a0f1a',
+  };
+
+  async function init(el: HTMLElement) {
+    const [mod] = await Promise.all([import('maplibre-gl'), loadCss(mapCssUrl)]);
+    // o MapLibre 6 expõe exports nomeados; versões antigas, um default
+    const maplibregl = ((mod as { default?: typeof mod }).default ?? mod) as typeof mod;
+    maplibregl.setWorkerUrl(new URL(mapWorkerUrl, location.href).href);
+    const lat = Number(el.dataset.lat);
+    const lng = Number(el.dataset.lng);
+    const floorsGeo = JSON.parse(el.dataset.floors!);
+    const haloGeo = JSON.parse(el.dataset.halo!);
+    const totalFloors: number = floorsGeo.features.length;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const map = new maplibregl.Map({
+      container: el.querySelector<HTMLElement>('[data-map-canvas]')!,
+      style: 'https://tiles.openfreemap.org/styles/dark',
+      center: reduce ? [lng, lat] : [lng - 0.03, lat + 0.02],
+      zoom: reduce ? 16 : 12.2,
+      pitch: reduce ? 50 : 0,
+      bearing: reduce ? -18 : 0,
+      attributionControl: { compact: true },
+      cooperativeGestures: true,
+      locale: {
+        'CooperativeGesturesHandler.WindowsHelpText': 'Use Ctrl + rolagem para dar zoom no mapa',
+        'CooperativeGesturesHandler.MacHelpText': 'Use ⌘ + rolagem para dar zoom no mapa',
+        'CooperativeGesturesHandler.MobileHelpText': 'Use dois dedos para mover o mapa',
+      },
+    });
+    map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'bottom-right');
+
+    map.on('style.load', () => {
+      const set = (id: string, prop: string, value: unknown) => {
+        if (map.getLayer(id)) map.setPaintProperty(id, prop, value);
+      };
+      for (const layer of map.getStyle().layers) {
+        const id = layer.id;
+        if (layer.type === 'background') set(id, 'background-color', BRAND.bg);
+        if (layer.type === 'symbol') {
+          set(id, 'text-color', id.startsWith('place') ? BRAND.label : BRAND.labelMuted);
+          set(id, 'text-halo-color', BRAND.halo);
+        }
+        if (layer.type === 'line' && (id.startsWith('highway') || id.startsWith('road'))) {
+          const c = id.includes('motorway') ? BRAND.motorway : id.includes('major') ? BRAND.major : BRAND.minor;
+          set(id, 'line-color', id.includes('casing') ? BRAND.bg : c);
+        }
+        if (layer.type === 'line' && id.startsWith('railway')) set(id, 'line-color', BRAND.minor);
+        if (layer.type === 'line' && id.startsWith('boundary')) set(id, 'line-color', BRAND.major);
+      }
+      set('water', 'fill-color', BRAND.water);
+      set('waterway', 'line-color', BRAND.water);
+      set('landuse_residential', 'fill-color', BRAND.land);
+      set('landuse_park', 'fill-color', BRAND.park);
+      set('landcover_wood', 'fill-color', BRAND.park);
+      if (map.getLayer('landcover_wood')) map.setPaintProperty('landcover_wood', 'fill-pattern', undefined);
+
+      // prédios em 3D no lugar dos prédios planos
+      if (map.getLayer('building')) {
+        map.setLayoutProperty('building', 'visibility', 'none');
+        map.addLayer(
+          {
+            id: 'building-3d',
+            type: 'fill-extrusion',
+            source: 'openmaptiles',
+            'source-layer': 'building',
+            minzoom: 14,
+            paint: {
+              'fill-extrusion-color': [
+                'interpolate', ['linear'], ['coalesce', ['get', 'render_height'], 8],
+                0, '#151e33', 30, BRAND.building, 90, '#26324f',
+              ],
+              'fill-extrusion-height': ['coalesce', ['get', 'render_height'], 8],
+              'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], 0],
+              'fill-extrusion-opacity': 0.92,
+            },
+          },
+          'aeroway-taxiway'
+        );
+      }
+
+      // luz vinda do noroeste para dar volume às faces do prédio
+      map.setLight({ anchor: 'map', color: '#ffffff', intensity: 0.45, position: [1.4, 300, 35] });
+
+      // Edifício Works: halo no térreo + lajes douradas andar por andar
+      map.addSource('works-halo', { type: 'geojson', data: haloGeo });
+      map.addSource('works', { type: 'geojson', data: floorsGeo });
+      map.addLayer({
+        id: 'works-halo-fill',
+        type: 'fill',
+        source: 'works-halo',
+        paint: { 'fill-color': '#f0ce80', 'fill-opacity': 0.12 },
+      });
+      map.addLayer({
+        id: 'works-halo-line',
+        type: 'line',
+        source: 'works-halo',
+        paint: { 'line-color': '#f0ce80', 'line-opacity': 0.55, 'line-width': 1.2 },
+      });
+      map.addLayer({
+        id: 'works-3d',
+        type: 'fill-extrusion',
+        source: 'works',
+        filter: ['<=', ['get', 'floor'], reduce ? totalFloors : 0],
+        paint: {
+          'fill-extrusion-color': ['case', ['get', 'last'], '#ffe2a1', '#f0ce80'],
+          'fill-extrusion-base': ['get', 'base'],
+          'fill-extrusion-height': ['get', 'top'],
+          'fill-extrusion-opacity': 1,
+          'fill-extrusion-vertical-gradient': true,
+        },
+      });
+    });
+
+    // o prédio "sobe" do chão, um andar de cada vez
+    const raise = () =>
+      new Promise<void>((resolve) => {
+        let k = 0;
+        const step = () => {
+          k += 1;
+          map.setFilter('works-3d', ['<=', ['get', 'floor'], k]);
+          if (k < totalFloors) setTimeout(step, 1500 / totalFloors);
+          else resolve();
+        };
+        step();
+      });
+
+    // etiqueta ao lado do prédio (o próprio prédio dourado é o marcador)
+    const pin = document.createElement('div');
+    pin.className = 'brand-pin';
+    // o MapLibre posiciona o elemento raiz via transform; a animação fica no filho
+    pin.innerHTML = '<span class="pin-inner"><span class="tag">BrVitta<small>Edifício Works</small></span></span>';
+    new maplibregl.Marker({ element: pin, anchor: 'left', offset: [34, -6] }).setLngLat([lng, lat]).addTo(map);
+
+    map.once('load', () => {
+      el.classList.add('is-ready');
+      if (reduce) return;
+      map.flyTo({ center: [lng, lat], zoom: 17.6, pitch: 60, bearing: -38, duration: 5200, curve: 1.6, essential: true });
+      // depois de pousar, levanta o prédio e gira bem devagar até alguém mexer no mapa
+      map.once('moveend', async () => {
+        await raise();
+        let spinning = true;
+        const stop = () => (spinning = false);
+        map.on('mousedown', stop);
+        map.on('touchstart', stop);
+        map.on('wheel', stop);
+        const spin = () => {
+          if (!spinning) return;
+          map.easeTo({ bearing: map.getBearing() + 6, duration: 6000, easing: (t) => t });
+          map.once('moveend', spin);
+        };
+        spin();
+      });
+    });
+  }
+
+  if (shell) {
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        init(shell).catch((err) => {
+          console.error('[mapa]', err);
+          shell.classList.add('is-failed');
+        });
+      },
+      { rootMargin: '600px 0px' }
+    );
+    io.observe(shell);
+  }
+</script>
+
+<style>
+  .map-shell {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    background: #0a0f1a;
+    overflow: hidden;
+  }
+  .map-canvas {
+    position: absolute;
+    inset: 0;
+  }
+  .map-placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(50% 50% at 50% 50%, rgb(240 206 128 / 0.07), transparent 70%),
+      repeating-linear-gradient(0deg, transparent 0 46px, rgb(255 255 255 / 0.03) 46px 47px),
+      repeating-linear-gradient(90deg, transparent 0 46px, rgb(255 255 255 / 0.03) 46px 47px),
+      #0a0f1a;
+    transition: opacity 0.8s ease;
+    pointer-events: none;
+  }
+  .is-ready .map-placeholder {
+    opacity: 0;
+  }
+  .pin-static {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 0 8px rgb(240 206 128 / 0.18);
+  }
+
+  /* etiqueta ao lado do prédio (criada via JS, por isso :global) */
+  .map-shell :global(.brand-pin .pin-inner) {
+    display: flex;
+    align-items: center;
+    animation: pin-in 0.9s 6.4s cubic-bezier(0.2, 1.2, 0.4, 1) both;
+  }
+  .map-shell :global(.brand-pin .pin-inner)::before {
+    content: '';
+    width: 26px;
+    height: 1.5px;
+    margin-right: 8px;
+    background: var(--gold);
+  }
+  .map-shell :global(.brand-pin .tag) {
+    display: grid;
+    padding: 0.55rem 0.9rem;
+    border-radius: 12px;
+    background: var(--gold);
+    color: #000;
+    font: 700 0.9rem/1.15 var(--display);
+    font-stretch: 110%;
+    white-space: nowrap;
+    box-shadow: 0 12px 30px rgb(0 0 0 / 0.5);
+  }
+  .map-shell :global(.brand-pin .tag small) {
+    font: 600 0.72rem/1.3 var(--body);
+  }
+  .map-shell :global(.maplibregl-ctrl-group) {
+    background: #131f35;
+    border: 1px solid #232f4a;
+  }
+  .map-shell :global(.maplibregl-ctrl-group button + button) {
+    border-top-color: #232f4a;
+  }
+  .map-shell :global(.maplibregl-ctrl-icon) {
+    filter: invert(1) brightness(0.85);
+  }
+  .map-shell :global(.maplibregl-ctrl-attrib) {
+    background: rgb(10 15 26 / 0.8);
+    color: #8d97ab;
+  }
+  .map-shell :global(.maplibregl-ctrl-attrib a) {
+    color: #c5ccd9;
+  }
+
+  @keyframes pin-in {
+    from { opacity: 0; transform: translateX(-14px); }
+    to { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .map-shell :global(.brand-pin .pin-inner) {
+      animation: none;
+    }
+  }
+</style>
